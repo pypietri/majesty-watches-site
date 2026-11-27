@@ -256,9 +256,10 @@ function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles su
 
 function pageHome() {
   const A = site.accueil;
-  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0])).slice(0, 14);
+  const okRing = m => m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]) && fondBlanc.has(m.photos[0]);
+  const nouveaux = montres.filter(m => m.nouveaute && okRing(m)).slice(0, 14);
   // L'anneau a besoin d'au moins 8 pièces : on complète avec le reste du stock si besoin
-  const list = [...nouveaux, ...montres.filter(m => !nouveaux.includes(m) && m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]))].slice(0, Math.max(nouveaux.length, 10));
+  const list = [...nouveaux, ...montres.filter(m => !nouveaux.includes(m) && okRing(m))].slice(0, Math.max(nouveaux.length, 10));
   const dispo = montres.filter(m => m.statut !== 'Vendue').length;
   const tournantes = (A.montres_tournantes || []).filter(Boolean);
   const avis = site.temoignages || [];
@@ -609,6 +610,17 @@ async function buildLogos() {
   }
 }
 await buildLogos();
+// Photos sur fond blanc (pour l'anneau : une photo sur fond gris ferait un carré visible)
+const fondBlanc = new Set();
+for (const m of montres) {
+  const src = m.photos[0]; if (!src) continue;
+  try {
+    const { data, info } = await sharp(path.join(ROOT, 'public', src)).resize(24, 24, { fit: 'fill' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    const px = (x, y) => { const i = (y * info.width + x) * 3; return Math.min(data[i], data[i + 1], data[i + 2]); };
+    const bords = [[0, 0], [23, 0], [0, 23], [23, 23], [12, 0], [0, 12], [23, 12]].map(([x, y]) => px(x, y));
+    if (Math.min(...bords) > 235) fondBlanc.add(src);
+  } catch {}
+}
 pageHome();
 pageCollection();
 montres.forEach(pageMontre);
