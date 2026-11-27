@@ -616,6 +616,8 @@ function seoFiles() {
   const redirects = [
     '/shop /montres/ 301',
     '/shop/ /montres/ 301',
+    '/shop/rolex /montres/rolex-submariner-date-bluesy---1994/ 301',
+    '/montres/rolex/ /montres/rolex-submariner-date-bluesy---1994/ 301',
     '/shop/:slug /montres/:slug/ 301',
     '/montres /montres/ 301',
     '/collection/minimalist-elegance /vendre/ 301',

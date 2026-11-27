@@ -8,7 +8,7 @@ nouveaute: true
 publie: true
 date: '2026-11-07'
 photos:
-  - /images/montres/rolex-1.jpg
+  - /images/montres/rolex-submariner-date-bluesy---1994-1.jpg
 boitier: 40 mm
 annee: '1994'
 etat: Excellent
