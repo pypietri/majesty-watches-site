@@ -40,6 +40,11 @@ function readMontres() {
     const nom = titre.replace(/\s*\[discontinued\]\s*/i, ' ').replace(/\s+/g, ' ').trim();
     const marque = fm.marque && fm.marque !== 'Autre' ? fm.marque : (nom.split(' - ')[0].split(' ').slice(0, 1).join(' '));
     const modele = nom.startsWith(marque) ? nom.slice(marque.length).trim() : nom;
+    // « Royal Oak 'Kasparov' - Brown - 39 mm - 2013 » -> nom court + détails
+    const parts = (modele || nom).split(/\s+-\s+/).map(x => x.trim()).filter(Boolean)
+      .map(x => x.replace(/'([^']+)'/g, '‘$1’').replace(/"([^"]+)"/g, '‘$1’').replace(/^New$/i, 'Neuve').replace(/^Mint$/i, 'Mint'));
+    const court = parts[0] || nom;
+    const detail = parts.slice(1).join(' · ');
     // Détails : on transforme « Clé : valeur » en lignes de fiche technique.
     const specs = []; const notes = [];
     for (const [k, label] of [['boitier', 'Boîtier'], ['annee', 'Année'], ['etat', 'État'], ['contenu', 'Contenu'], ['garantie', 'Garantie']]) {
@@ -61,7 +66,7 @@ function readMontres() {
       else specs.push(['', l]);
     }
     return {
-      slug, titre, nom, marque, modele, discontinued,
+      slug, titre, nom, marque, modele, court, detail, discontinued,
       reference: String(fm.reference || '').trim(),
       prix: String(fm.prix || '').trim(),
       prixNum: priceNum(fm.prix),
@@ -237,7 +242,8 @@ function card(m, { eager = false } = {}) {
     </div>
     <div class="card-tx">
       <span class="card-brand">${esc(m.marque)}</span>
-      <h3 class="card-name">${esc(m.modele || m.nom)}</h3>
+      <h3 class="card-name">${esc(m.court)}</h3>
+      ${m.detail ? `<p class="card-detail">${esc(m.detail)}</p>` : ''}
       <div class="card-meta"><span>${m.reference ? 'Réf. ' + esc(m.reference) : ''}</span><span class="card-price">${esc(priceLabel(m))}</span></div>
     </div>
   </a>
@@ -372,7 +378,7 @@ function pageCollection() {
         ${marques.map(b => `<button class="chip" aria-pressed="false" data-marque="${esc(b)}">${esc(b)}</button>`).join('')}
       </div>
       <div class="tools-r">
-        <label class="search">${icon.search}<input type="search" placeholder="Rechercher un modèle, une référence…" data-search aria-label="Rechercher"></label>
+        <label class="search">${icon.search}<input type="search" placeholder="Modèle, référence…" data-search aria-label="Rechercher"></label>
         <label class="sort"><span class="sr">Trier</span>
           <select data-sort>
             <option value="date">Arrivages récents</option>
@@ -400,7 +406,7 @@ function pageMontre(m) {
   const similaires = [...autres.filter(x => x.marque === m.marque), ...autres.filter(x => x.marque !== m.marque)].slice(0, 4);
   const photos = m.photos.filter(p => imgMap.get(p));
   const body = `
-<nav class="crumbs wrap" aria-label="Fil d’Ariane"><a href="/montres/">Collection</a><span>/</span><a href="/montres/?marque=${encodeURIComponent(m.marque)}">${esc(m.marque)}</a><span>/</span><span aria-current="page">${esc(m.modele || m.nom)}</span></nav>
+<nav class="crumbs wrap" aria-label="Fil d’Ariane"><a href="/montres/">Collection</a><span>/</span><a href="/montres/?marque=${encodeURIComponent(m.marque)}">${esc(m.marque)}</a><span>/</span><span aria-current="page">${esc(m.court)}</span></nav>
 <section class="pdp">
   <div class="wrap pdp-grid">
     <div class="gal" data-gal>
@@ -412,8 +418,8 @@ function pageMontre(m) {
     <div class="pdp-info">
       <div class="pdp-sticky">
         <p class="eyebrow">${esc(m.marque)}${m.discontinued ? ' · Production arrêtée' : ''}</p>
-        <h1 class="pdp-title">${esc(m.modele || m.nom)}</h1>
-        ${m.reference ? `<p class="pdp-ref">Réf. ${esc(m.reference)}</p>` : ''}
+        <h1 class="pdp-title">${esc(m.court)}</h1>
+        <p class="pdp-ref">${[m.detail, m.reference ? 'Réf. ' + esc(m.reference) : ''].filter(Boolean).join(' · ')}</p>
         <div class="pdp-price"><span>${esc(priceLabel(m))}</span>${m.statut !== 'Disponible' ? `<em class="pdp-status">${esc(m.statut)}</em>` : ''}</div>
         <div class="pdp-btns">
           <a class="btn btn-block" href="${wa(msg)}" target="_blank" rel="noopener">${icon.wa} ${m.statut === 'Disponible' ? 'Réserver / poser une question' : 'Nous écrire sur WhatsApp'}</a>
