@@ -352,7 +352,7 @@ function pageHome() {
     <div class="ring-hd wrap">
       <p class="eyebrow">Arrivages récents</p>
       <h2 class="h2">Nouvel arrivage</h2>
-      <span class="ring-hint">Glissez, balayez au trackpad ou utilisez les flèches</span>
+      <span class="ring-hint"><span class="hide-m">Glissez, balayez au trackpad ou utilisez les flèches</span><span class="show-m">Balayez ou utilisez les flèches</span></span>
     </div>
     <div class="ring-stage" data-ring-stage>
       <div class="ring-track" data-ring-track style="--n:${list.length}">
