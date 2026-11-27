@@ -19,9 +19,9 @@ accueil:
   citation_auteur: Mickaël — fondateur de Majesty Watches
 
 google:
-  note: ""
-  nombre: ""
-  lien: ""
+  note: "5,0"
+  nombre: "145"
+  lien: https://maps.google.com/?cid=2468464787104331233
 
 engagements:
   - titre: Montres authentiques
@@ -34,12 +34,24 @@ engagements:
     texte: Des solutions de paiement sécurisées.
 
 temoignages:
-  - nom: Antoine
-    texte: Je tiens à exprimer ma grande satisfaction suite à mon expérience avec Mickaël lors de l’achat de ma montre. Dès le début, son professionnalisme et son expertise m’ont impressionné. Il a su répondre à toutes mes interrogations avec clarté et précision, ce qui a été extrêmement rassurant.
-  - nom: Sacha
-    texte: Un professionnel à l’écoute, qui a été le premier à chercher et trouver des solutions selon mes demandes. Il est de bon conseil, et surtout, le plus important, il est honnête. Vraiment très heureux d’avoir pu m’offrir ma première Rolex grâce à cet homme !
-  - nom: Tony
-    texte: Je recommande vivement Majesty Watches ! Mickaël se montre toujours disponible et réactif, et il offre d’excellents conseils. La montre que je souhaitais a été livrée en 15 jours, dans le respect du budget. Un immense merci !
+  - nom: Thomas D.
+    etoiles: 5
+    texte: "Je tiens à remercier chaleureusement Mika pour son professionnalisme et son accompagnement. Étant novice et compte tenu de tout ce que l’on peut entendre sur ce milieu, Mika a su me conseiller, me guider et m’accompagner à chaque étape, avec transparence et bienveillance. Sécurité, confiance et bonne humeur sont au rendez-vous."
+  - nom: Jean Antoine G.
+    etoiles: 5
+    texte: "Très satisfait de mon achat, cette GMT-Master II est vraiment magnifique. Mika a été très professionnel et disponible du début à la fin, avec de bons conseils et un service sérieux. Je recommande sans hésiter."
+  - nom: François A.
+    etoiles: 5
+    texte: "Un grand merci à Mickaël pour sa sympathie et son professionnalisme. Première transaction avec lui pour cette magnifique Rolex Daytona, et tout s’est parfaitement déroulé. Sérieux, disponible et de confiance, je recommande sans hésitation !"
+  - nom: Nicolas A.
+    etoiles: 5
+    texte: "Très bonne expérience client. Montre achetée à distance qui correspond parfaitement au descriptif. Vous pouvez faire confiance. Merci à Mickaël pour son sérieux et son professionnalisme."
+  - nom: Florian D.
+    etoiles: 5
+    texte: "Très satisfait de mon achat ! Mickaël a été très sympathique, toujours à l’écoute et très professionnel. Il a pris le temps de répondre à toutes mes questions. Un grand merci à lui, je recommande !"
+  - nom: Stéphane B.
+    etoiles: 5
+    texte: "Merci Mickaël pour cette transaction en tout point conforme à mes attentes, pour la rapidité, le service et la gentillesse. Superbe Tudor Black Bay Burgundy ! Vendeur de confiance."
 
 vendre:
   titre: Vendez votre montre en toute confiance
