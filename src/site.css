@@ -345,17 +345,6 @@ a.g-score:hover { border-color: var(--navy); }
   .hd.is-open .hd-drawer { max-height: 80vh; }
   .home .hd { position: sticky; }
   .home .hd:not(.is-scrolled):not(.is-open) { background: rgba(255, 255, 255, .95); }
-  .hero { min-height: 0; display: block; background: #fff; }
-  .hero-bg { position: relative; inset: auto; height: 46svh; min-height: 300px; max-height: 440px; background: #F4F4F3; }
-  .hero-bg img { object-position: 81% 46%; }
-  .hero::after { display: none; }
-  .hero > .wrap { padding-top: 30px; padding-bottom: 40px; }
-  .hero .display { font-size: clamp(30px, 8.6vw, 40px); line-height: 1.02; }
-  .hero .lead { display: none; }
-  .hero-btns { max-width: none; gap: 8px; margin-top: 26px; }
-  .hero-btns .btn { height: 50px; padding: 0 22px; }
-  .hero .btn-white { border-color: var(--line-2); }
-  .hero-foot { display: none; }
   .sell-grid { grid-template-columns: 1fr; text-align: center; }
   .sell-col, .sell-col.r { justify-items: center; text-align: center; }
   .sell-col .eyebrow, .sell-col.r .eyebrow { flex-direction: row; }
@@ -426,4 +415,29 @@ a.g-score:hover { border-color: var(--navy); }
   .ring-btn { width: 46px; height: 46px; }
   .ring-now { min-width: 0; flex: 1; }
   .ring-now strong { font-size: 24px; }
+}
+
+/* Accueil iPad et iPhone : la montre en gros plan, le texte posé dessus (esprit de l'ancien site) */
+@media (max-width: 1100px) {
+  .hero { min-height: calc(100svh - var(--hd)); align-items: center; background: #F2F2F1; }
+  .hero-bg { inset: 0; }
+  .hero-bg picture, .hero-bg img { display: block; width: 100%; height: 100%; }
+  .hero-bg img { object-fit: cover; object-position: 100% 60%; }
+  .hero::after { background: linear-gradient(90deg, rgba(244, 244, 243, .92) 0%, rgba(244, 244, 243, .7) 42%, rgba(244, 244, 243, 0) 68%); }
+  .hero > .wrap { padding-top: 40px; padding-bottom: 60px; }
+  .hero-tx { max-width: 560px; }
+  .hero .display { font-size: clamp(40px, 7.4vw, 72px); line-height: 1.02; }
+  .hero .lead { display: block; max-width: 30ch; margin: 24px 0 34px; font-size: clamp(16px, 2.2vw, 19px); color: #26354A; }
+  .hero-btns { max-width: 380px; gap: 10px; }
+  .hero-btns .btn { height: 54px; padding: 0 24px; }
+  .hero .btn-white { background: rgba(255, 255, 255, .92); border-color: transparent; }
+  .hero-foot { display: none; }
+}
+@media (max-width: 640px) {
+  .hero .display { font-size: clamp(36px, 11vw, 46px); }
+  .hero .lead { max-width: 20ch; font-size: 16px; }
+  .hero-tx { max-width: none; }
+  .hero .display { max-width: 8.5em; }
+  .hero-btns { max-width: none; margin-right: calc(var(--pad) * -0); }
+  .hero::after { background: linear-gradient(90deg, rgba(244, 244, 243, .9) 0%, rgba(244, 244, 243, .55) 55%, rgba(244, 244, 243, 0) 80%); }
 }

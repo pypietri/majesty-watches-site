@@ -8,6 +8,8 @@ accueil:
   titre: Trouvez la montre qui vous correspond
   texte: Des pièces uniques, sélectionnées avec soin. Pour le plaisir d’offrir, de collectionner, ou tout simplement de porter une montre qui a du caractère.
   image: /images/site/hero-large.jpg
+  image_tablette: /images/site/hero-tablette.jpg
+  image_mobile: /images/site/hero-mobile.jpg
   montres_tournantes:
     - /images/site/tourne-1.png
     - /images/site/tourne-2.png

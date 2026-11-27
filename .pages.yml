@@ -102,7 +102,9 @@ content:
         fields:
           - { name: titre, label: Grand titre, type: string }
           - { name: texte, label: Texte d’introduction, type: text }
-          - { name: image, label: Grande photo, type: image }
+          - { name: image, label: Grande photo (ordinateur), type: image }
+          - { name: image_tablette, label: Photo iPad (format portrait), type: image }
+          - { name: image_mobile, label: Photo iPhone (format portrait), type: image }
           - { name: montres_tournantes, label: Montres qui défilent (section Vendre), type: image, list: true }
       - name: google
         label: Fiche Google

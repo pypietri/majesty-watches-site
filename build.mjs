@@ -254,6 +254,11 @@ function writePage(urlPath, html) {
 function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f.replace('.svg', '.png') : null; }
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
+function heroPicture(A) {
+  const src = (f, mq) => { const o = imgMap.get(f); return o ? `<source media="${mq}" srcset="${o.srcset.join(', ')}" sizes="100vw">` : ''; };
+  return `<picture>${src(A.image_mobile, '(max-width: 640px)')}${src(A.image_tablette, '(max-width: 1100px)')}${img(A.image, { sizes: '100vw', alt: 'Montre de prestige — Majesty Watches', eager: true, w: 1600 })}</picture>`;
+}
+
 function pageHome() {
   const A = site.accueil;
   const okRing = m => m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]) && fondBlanc.has(m.photos[0]);
@@ -271,7 +276,7 @@ function pageHome() {
   for (let i = 0; i < Math.max(det.length, sto.length); i++) { if (sto[i]) spinImgs.push(sto[i]); if (det[i]) spinImgs.push(det[i]); }
   const body = `
 <section class="hero" data-hero>
-  <div class="hero-bg">${img(A.image, { sizes: '100vw', alt: 'Montre de prestige — Majesty Watches', eager: true, w: 1600 })}</div>
+  <div class="hero-bg">${heroPicture(A)}</div>
   <div class="wrap">
     <div class="hero-tx">
       <h1 class="display" data-reveal>${esc(A.titre)}</h1>
@@ -588,6 +593,8 @@ const toProcess = new Set([site.accueil.image, ...(site.accueil.montres_tournant
 let done = 0;
 const queue = [...toProcess].filter(Boolean);
 await processImage(site.accueil.image, [1280, 1920, 2560, 3200]);
+await processImage(site.accueil.image_mobile, [640, 960, 1350]);
+await processImage(site.accueil.image_tablette, [900, 1400, 1800]);
 await Promise.all(Array.from({ length: 4 }, async () => {
   while (queue.length) { const s = queue.shift(); try { await processImage(s); } catch (e) { console.warn('Image ignorée', s, e.message); imgMap.set(s, null); } done++; }
 }));

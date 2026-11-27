@@ -20,8 +20,8 @@ const firstWatch = fs.readdirSync(path.join(DIST, 'montres')).find(d => fs.statS
 if (firstWatch && !process.env.PAGES) pages.push(`/montres/${firstWatch}/`);
 fs.mkdirSync('shots', { recursive: true });
 const browser = await chromium.launch();
-for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['lap', { width: 1200, height: 800 }], ['mob', { width: 390, height: 844 }]]) {
-  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: name === 'mob' ? 2 : 1 });
+for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['tab', { width: 820, height: 1180 }], ['mob', { width: 390, height: 844 }]]) {
+  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: name === 'desk' ? 1 : 2 });
   const page = await ctx.newPage();
   for (const p of pages) {
     await page.goto('http://localhost:4173' + p, { waitUntil: 'networkidle' });
