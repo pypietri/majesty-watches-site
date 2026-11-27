@@ -26,7 +26,7 @@ content:
         label: Maison
         type: select
         options:
-          values: [Rolex, Audemars Piguet, Patek Philippe, Cartier, Vacheron Constantin, Tudor, Omega, Autre]
+          values: [Rolex, Audemars Piguet, Patek Philippe, Cartier, Vacheron Constantin, Tudor, Omega, Richard Mille, Hublot, IWC, Breitling, Panerai, Autre]
         default: Rolex
       - name: reference
         label: Référence
