@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-yacht-master---40-mm---2024---new-4.jpg
   - /images/montres/rolex-yacht-master---40-mm---2024---new-5.jpg
   - /images/montres/rolex-yacht-master---40-mm---2024---new-6.jpg
+boitier: 40 mm
+annee: '2022'
+etat: Comme neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Yacht-Master**
-
-- Référence : 126622
-- Boîtier : 40 mm
-- Année : 2022
-- État : Comme neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

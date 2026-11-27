@@ -14,13 +14,9 @@ photos:
   - /images/montres/cartier-santos---grand-modele---2024-4.jpg
   - /images/montres/cartier-santos---grand-modele---2024-5.jpg
   - /images/montres/cartier-santos---grand-modele---2024-6.jpg
+boitier: 39,8 mm
+annee: '2023'
+garantie: Garantie (Cartier Care) jusqu'en 2032
+etat: Comme neuve
+contenu: Boîte, carte de garantie, livrets
 ---
-
-**Cartier Santos - Grand modèle**
-
-- Référence : WSSA0018
-- Boîtier : 39,8 mm
-- Année : 2023
-- Garantie (Cartier Care) jusqu'en 2032
-- État : Comme neuve
-- Full set : Boîte, carte de garantie, livrets

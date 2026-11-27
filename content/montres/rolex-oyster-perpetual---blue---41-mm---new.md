@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-oyster-perpetual---blue---41-mm---new-4.jpg
   - /images/montres/rolex-oyster-perpetual---blue---41-mm---new-5.jpg
   - /images/montres/rolex-oyster-perpetual---blue---41-mm---new-6.jpg
+boitier: 41 mm
+annee: 07/2026
+etat: Neuve ~ Neuve portée & stickée
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2031
 ---
-
-**Rolex Oyster Perpetual - Pistachio**
-
-- Référence : 134300
-- Boîtier : 41 mm
-- Année : 07/2026
-- État : Neuve ~ Neuve portée & stickée
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2031

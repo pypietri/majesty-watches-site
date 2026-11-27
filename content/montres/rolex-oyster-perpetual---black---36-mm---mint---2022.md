@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-oyster-perpetual---black---36-mm---mint---2022-4.jpg
   - /images/montres/rolex-oyster-perpetual---black---36-mm---mint---2022-5.jpg
   - /images/montres/rolex-oyster-perpetual---black---36-mm---mint---2022-6.jpg
+boitier: 36 mm
+annee: '2022'
+etat: Mint — Comme neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie jusqu'en 2027
 ---
-
-**Rolex Oyster Perpetual - Black**
-
-- Référence : 126000
-- Boîtier : 36 mm
-- Année : 2022
-- État : Mint — Comme neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie jusqu'en 2027

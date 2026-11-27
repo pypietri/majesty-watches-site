@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust---41-mm---oyster-4.jpg
   - /images/montres/rolex-datejust---41-mm---oyster-5.jpg
   - /images/montres/rolex-datejust---41-mm---oyster-6.jpg
+boitier: 41 mm
+annee: '2026'
+etat: Neuve — Jamais portée
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2031
 ---
-
-**Rolex Datejust Rhodium - Jubilee**
-
-- Référence : 126334
-- Boîtier : 41 mm
-- Année : 2026
-- État : Neuve — Jamais portée
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2031

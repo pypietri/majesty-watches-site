@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-explorer---36-mm---2023---new-4.jpg
   - /images/montres/rolex-explorer---36-mm---2023---new-5.jpg
   - /images/montres/rolex-explorer---36-mm---2023---new-6.jpg
+boitier: 36 mm
+annee: '2023'
+etat: Neuve
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2028
 ---
-
-**Rolex Explorer**
-
-- Référence : 124270
-- Boîtier : 36 mm
-- Année : 2023
-- État : Neuve
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2028

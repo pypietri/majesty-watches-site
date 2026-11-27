@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-submariner-no-date---40-mm---2019-4.jpg
   - /images/montres/rolex-submariner-no-date---40-mm---2019-5.jpg
   - /images/montres/rolex-submariner-no-date---40-mm---2019-6.jpg
+boitier: 40 mm
+annee: '2019'
+etat: Excellent
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie professionnelle
 ---
-
-**Rolex Submariner 'No Date' [Discontinued]**
-
-- Référence : 114060
-- Boîtier : 40 mm
-- Année : 2019
-- État : Excellent
-- Full set : Boîte, carte de garantie, livrets
-- Garantie professionnelle

@@ -9,13 +9,9 @@ publie: true
 date: '2026-11-07'
 photos:
   - /images/montres/rolex-1.jpg
+boitier: 40 mm
+annee: '1994'
+etat: Excellent
+contenu: Boîte et papiers
+garantie: Garantie
 ---
-
-**Rolex Submariner Date 'Bluesy'**
-
-- Référence : 16613
-- Boîtier : 40 mm
-- Année : 1994
-- État : Excellent
-- Set : Boîte et papiers
-- Garantie

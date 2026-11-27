@@ -13,14 +13,10 @@ photos:
   - /images/montres/rolex-datejust---black---jubilee---2018---service-rolex-2025-3.jpg
   - /images/montres/rolex-datejust---black---jubilee---2018---service-rolex-2025-4.jpg
   - /images/montres/rolex-datejust---black---jubilee---2018---service-rolex-2025-5.jpg
+boitier: 41 mm
+annee: '2018'
+etat: Très bon
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2027
+infos: Montre révisée chez Rolex en 2025
 ---
-
-**Rolex Datejust Black - Jubilee**
-
-- Référence : 126334
-- Boîtier : 41 mm
-- Année : 2018
-- Montre révisée chez Rolex en 2025
-- État : Très bon
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2027

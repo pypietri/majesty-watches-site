@@ -1,0 +1,144 @@
+# Back-office Majesty Watches (Pages CMS — https://app.pagescms.org)
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: montres
+    label: Montres
+    type: collection
+    path: content/montres
+    filename: "{primary}.md"
+    view:
+      fields: [photos, titre, prix, statut, publie]
+      primary: titre
+      sort: [date, titre]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: titre
+        label: Nom de la montre
+        description: "Ex. : Rolex Submariner Date - 41 mm - 2021"
+        type: string
+        required: true
+      - name: marque
+        label: Maison
+        type: select
+        options:
+          values: [Rolex, Audemars Piguet, Patek Philippe, Cartier, Vacheron Constantin, Tudor, Omega, Autre]
+        default: Rolex
+      - name: reference
+        label: Référence
+        description: "Ex. : 126610LN"
+        type: string
+      - name: prix
+        label: Prix
+        description: "Ex. : 12 900 € — laisser vide pour « Prix sur demande »"
+        type: string
+      - name: statut
+        label: Statut
+        type: select
+        options:
+          values: [Disponible, Réservée, En arrivage, Vendue]
+        default: Disponible
+      - name: photos
+        label: Photos
+        description: La première photo est celle affichée dans la collection (idéalement sur fond blanc).
+        type: image
+        list: true
+      - name: nouveaute
+        label: Afficher dans « Nouveautés » (page d’accueil)
+        type: boolean
+        default: true
+      - name: publie
+        label: Visible sur le site
+        type: boolean
+        default: true
+      - name: date
+        label: Date d’ajout
+        description: Les montres les plus récentes apparaissent en premier.
+        type: date
+      - name: boitier
+        label: Boîtier
+        description: "Ex. : 41 mm"
+        type: string
+      - name: annee
+        label: Année
+        type: string
+      - name: etat
+        label: État
+        description: "Ex. : Excellent, Comme neuve, Neuve — jamais portée"
+        type: string
+      - name: contenu
+        label: Contenu (set)
+        description: "Ex. : Boîte, carte de garantie, livrets"
+        type: string
+      - name: garantie
+        label: Garantie
+        description: "Ex. : Garantie manufacture jusqu’en 2029"
+        type: string
+      - name: infos
+        label: Autres informations
+        description: Une information par ligne.
+        type: text
+
+  - name: site
+    label: Textes du site
+    type: file
+    path: content/site.yml
+    fields:
+      - name: contact
+        label: Coordonnées
+        type: object
+        fields:
+          - { name: telephone, label: Téléphone / WhatsApp, type: string }
+          - { name: email, label: E-mail, type: string }
+          - { name: instagram, label: Compte Instagram (sans @), type: string }
+          - { name: ville, label: Ville, type: string }
+      - name: accueil
+        label: Page d’accueil
+        type: object
+        fields:
+          - { name: surtitre, label: Petit titre, type: string }
+          - { name: titre, label: Grand titre, type: string }
+          - { name: texte, label: Texte d’introduction, type: text }
+          - { name: image, label: Grande photo, type: image }
+          - { name: citation, label: Citation, type: text }
+          - { name: citation_auteur, label: Auteur de la citation, type: string }
+      - name: engagements
+        label: Engagements (4 points)
+        type: object
+        list: true
+        fields:
+          - { name: titre, label: Titre, type: string }
+          - { name: texte, label: Texte, type: string }
+      - name: temoignages
+        label: Avis clients
+        type: object
+        list: true
+        fields:
+          - { name: nom, label: Prénom, type: string }
+          - { name: texte, label: Avis, type: text }
+      - name: vendre
+        label: Page « Vendre »
+        type: object
+        fields:
+          - { name: titre, label: Titre, type: string }
+          - { name: intro, label: Introduction, type: text }
+          - { name: liste, label: Informations à fournir, type: string, list: true }
+          - { name: conclusion, label: Conclusion, type: text }
+      - name: recherche
+        label: Page « Recherche personnalisée »
+        type: object
+        fields:
+          - { name: titre, label: Titre, type: string }
+          - { name: intro, label: Accroche, type: string }
+          - { name: texte, label: Texte, type: text }
+
+  - name: mentions
+    label: Mentions légales
+    type: file
+    path: content/mentions-legales.md
+    fields:
+      - { name: body, label: Texte, type: rich-text }

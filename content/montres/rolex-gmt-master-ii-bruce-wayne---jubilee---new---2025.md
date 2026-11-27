@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-bruce-wayne---jubilee---new---2025-4.jpg
   - /images/montres/rolex-gmt-master-ii-bruce-wayne---jubilee---new---2025-5.jpg
   - /images/montres/rolex-gmt-master-ii-bruce-wayne---jubilee---new---2025-6.jpg
+boitier: 40 mm
+annee: '2025'
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2030
 ---
-
-**Rolex GMT Master II 'Bruce Wayne' - Jubilee**
-
-- Référence : 126710GRNR
-- Boîtier : 40 mm
-- Année : 2025
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2030

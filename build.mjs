@@ -42,6 +42,13 @@ function readMontres() {
     const modele = nom.startsWith(marque) ? nom.slice(marque.length).trim() : nom;
     // Détails : on transforme « Clé : valeur » en lignes de fiche technique.
     const specs = []; const notes = [];
+    for (const [k, label] of [['boitier', 'Boîtier'], ['annee', 'Année'], ['etat', 'État'], ['contenu', 'Contenu'], ['garantie', 'Garantie']]) {
+      if (fm[k] === undefined || !String(fm[k]).trim()) continue;
+      let v = String(fm[k]).trim();
+      if (k === 'garantie') { v = v.replace(/^garantie\s*/i, '').replace(/^\((.+)\)/, '$1').trim(); v = v ? v[0].toUpperCase() + v.slice(1) : 'Oui'; }
+      specs.push([label, v]);
+    }
+    for (const l of String(fm.infos || '').split('\n').map(s => s.trim()).filter(Boolean)) specs.push(['', l]);
     let seenList = false;
     for (const line of body.split('\n')) {
       const isItem = /^\s*[-*]\s+/.test(line);
@@ -507,7 +514,7 @@ function pagesStatic() {
 </section>`;
   writePage('/contact/', layout({ title: 'Contact', description: 'Contactez Majesty Watches par WhatsApp, téléphone, e-mail ou Instagram.', canonical: '/contact/', body }));
 
-  const legal = fs.readFileSync(path.join(ROOT, 'content/mentions-legales.md'), 'utf8');
+  const legal = fs.readFileSync(path.join(ROOT, 'content/mentions-legales.md'), 'utf8').replace(/^---[\s\S]*?---\n/, '');
   pageText('/mentions-legales/', { eyebrow: 'Informations', title: 'Mentions légales', html: marked.parse(legal) });
   const conf = fs.readFileSync(path.join(ROOT, 'content/confidentialite.md'), 'utf8');
   pageText('/confidentialite/', { eyebrow: 'Informations', title: 'Confidentialité', html: marked.parse(conf) });

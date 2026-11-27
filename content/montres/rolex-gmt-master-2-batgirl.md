@@ -9,13 +9,9 @@ publie: true
 date: '2026-11-14'
 photos:
   - /images/montres/rolex-gmt-master-2-batgirl-1.jpg
+boitier: 40 mm
+annee: '2025'
+etat: Neuve
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex GMT Master II 'Batgirl' - Jubilee**
-
-- Référence : 126710BLNR
-- Boîtier : 40 mm
-- Année : 2025
-- État : Neuve
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

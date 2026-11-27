@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii---oyster---2010-4.jpg
   - /images/montres/rolex-gmt-master-ii---oyster---2010-5.jpg
   - /images/montres/rolex-gmt-master-ii---oyster---2010-6.jpg
+boitier: 40 mm
+annee: Open Date — Série V
+etat: Comme neuf
+contenu: Boîtes, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex GMT Master II**
-
-- Référence : 116710LN
-- Boîtier : 40 mm
-- Année : Open Date — Série V
-- État : Comme neuf
-- Full set : Boîtes, carte de garantie, livrets
-- Garantie

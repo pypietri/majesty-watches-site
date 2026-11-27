@@ -9,14 +9,10 @@ publie: true
 date: '2026-11-16'
 photos:
   - /images/montres/rolex-daytona-zenith---1999-1.jpg
+boitier: 40 mm
+annee: '1999'
+etat: Excellent
+contenu: Boîtes, livrets, hold-card, papiers de service Rolex, calendrier, tags
+garantie: Garantie
+infos: Série A
 ---
-
-**Rolex Daytona 'Zenith'**
-
-- Référence : 16520
-- Boîtier : 40 mm
-- Année : 1999
-- Série A
-- État : Excellent
-- Set : Boîtes, livrets, hold-card, papiers de service Rolex, calendrier, tags
-- Garantie

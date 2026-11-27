@@ -14,13 +14,9 @@ photos:
   - /images/montres/vacheron-constantin-overseas-blue---41-mm---2022---neuve-4.jpg
   - /images/montres/vacheron-constantin-overseas-blue---41-mm---2022---neuve-5.jpg
   - /images/montres/vacheron-constantin-overseas-blue---41-mm---2022---neuve-6.jpg
+boitier: 41 mm
+annee: 2022 — Première main
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets, facture d'origine
+garantie: Garantie manufacture
 ---
-
-**Vacheron Constantin Overseas Blue**
-
-- Référence : 4500V/110A
-- Boîtier : 41 mm
-- Année : 2022 — Première main
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets, facture d'origine
-- Garantie manufacture

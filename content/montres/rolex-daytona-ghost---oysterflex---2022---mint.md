@@ -9,13 +9,9 @@ publie: true
 date: '2026-11-19'
 photos:
   - /images/montres/rolex-daytona-ghost---oysterflex---2022---mint-1.jpg
+boitier: 40 mm
+annee: '2022'
+etat: Mint
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Daytona 'Ghost' - Oysterflex**
-
-- Référence : 116519LN
-- Boîtier : 40 mm
-- Année : 2022
-- État : Mint
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

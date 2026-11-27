@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-daytona---2012-4.jpg
   - /images/montres/rolex-daytona---2012-5.jpg
   - /images/montres/rolex-daytona---2012-6.jpg
+boitier: 40 mm
+annee: '2012'
+etat: Excellent
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Daytona**
-
-- Référence : 116520
-- Boîtier : 40 mm
-- Année : 2012
-- État : Excellent
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

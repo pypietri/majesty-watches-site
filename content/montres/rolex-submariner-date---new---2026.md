@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-submariner-date---new---2026-4.jpg
   - /images/montres/rolex-submariner-date---new---2026-5.jpg
   - /images/montres/rolex-submariner-date---new---2026-6.jpg
+boitier: 41 mm
+annee: '2021'
+etat: Comme neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Submariner Date**
-
-- Référence : 126610LN
-- Boîtier : 41 mm
-- Année : 2021
-- État : Comme neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

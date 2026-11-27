@@ -14,13 +14,9 @@ photos:
   - /images/montres/audemars-piguet-royal-oak---green---2025---new-4.jpg
   - /images/montres/audemars-piguet-royal-oak---green---2025---new-5.jpg
   - /images/montres/audemars-piguet-royal-oak---green---2025---new-6.jpg
+boitier: 41 mm
+annee: '2025'
+etat: Neuf
+contenu: Complet
+garantie: Garantie
 ---
-
-**Audemars Piguet Royal Oak Chronograph - Green**
-
-- Référence : 26240ST
-- Boîtier : 41 mm
-- Année : 2025
-- État : Neuf
-- Set : Complet
-- Garantie

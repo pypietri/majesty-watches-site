@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-bruce-wayne-4.jpg
   - /images/montres/rolex-gmt-master-ii-bruce-wayne-5.jpg
   - /images/montres/rolex-gmt-master-ii-bruce-wayne-6.png
+boitier: 40 mm
+annee: 10/2024
+etat: Neuf ~ Neuve portée
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2029
 ---
-
-**Rolex GMT Master II 'Bruce Wayne'**
-
-- Référence : 126710GRNR
-- Boîtier : 40 mm
-- Année : 10/2024
-- État : Neuf ~ Neuve portée
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2029

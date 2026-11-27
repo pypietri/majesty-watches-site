@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-green---41-mm---oyster---2024-4.jpg
   - /images/montres/rolex-datejust-green---41-mm---oyster---2024-5.jpg
   - /images/montres/rolex-datejust-green---41-mm---oyster---2024-6.jpg
+boitier: 41 mm
+annee: '2024'
+etat: Comme neuve
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2029
 ---
-
-**Rolex Datejust - Green**
-
-- Référence : 126300
-- Boîtier : 41 mm
-- Année : 2024
-- État : Comme neuve
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2029

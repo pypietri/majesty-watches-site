@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-pepsi---jubilee---2022-discontinued-4.jpg
   - /images/montres/rolex-gmt-master-ii-pepsi---jubilee---2022-discontinued-5.jpg
   - /images/montres/rolex-gmt-master-ii-pepsi---jubilee---2022-discontinued-6.jpg
+boitier: 40 mm
+annee: '2022'
+etat: Mint
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2027
 ---
-
-**Rolex GMT Master II 'Pepsi'**
-
-- Référence : 126710BLRO
-- Boîtier : 40 mm
-- Année : 2022
-- État : Mint
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2027

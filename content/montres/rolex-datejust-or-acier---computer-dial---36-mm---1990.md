@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-or-acier---computer-dial---36-mm---1990-4.jpg
   - /images/montres/rolex-datejust-or-acier---computer-dial---36-mm---1990-5.jpg
   - /images/montres/rolex-datejust-or-acier---computer-dial---36-mm---1990-6.jpg
+boitier: 36 mm
+annee: 1990 — Série L
+etat: Mint
+contenu: Boîte, papiers, livrets & tags
+garantie: Garantie
 ---
-
-**Rolex Datejust Or/Acier - Computer Dial**
-
-- Référence : 16233
-- Boîtier : 36 mm
-- Année : 1990 — Série L
-- État : Mint
-- Full set : Boîte, papiers, livrets & tags
-- Garantie

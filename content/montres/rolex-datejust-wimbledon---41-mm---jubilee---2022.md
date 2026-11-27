@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-wimbledon---41-mm---jubilee---2022-4.jpg
   - /images/montres/rolex-datejust-wimbledon---41-mm---jubilee---2022-5.jpg
   - /images/montres/rolex-datejust-wimbledon---41-mm---jubilee---2022-6.jpg
+boitier: 41 mm
+annee: '2022'
+etat: Très bon
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Datejust Wimbledon**
-
-- Référence : 126334
-- Boîtier : 41 mm
-- Année : 2022
-- État : Très bon
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

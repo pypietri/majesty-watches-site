@@ -13,13 +13,9 @@ photos:
   - /images/montres/patek-philippe-aquanaut-jumbo---38-mm---1998-3.jpg
   - /images/montres/patek-philippe-aquanaut-jumbo---38-mm---1998-4.jpg
   - /images/montres/patek-philippe-aquanaut-jumbo---38-mm---1998-5.jpg
+boitier: 38 mm
+annee: '1999'
+etat: Très bon
+contenu: Boîtes, extrait d'archives
+garantie: Révisée et garantie 24 mois
 ---
-
-**Patek Philippe Aquanaut 'Jumbo'**
-
-- Référence : 5065A
-- Boîtier : 38 mm
-- Année : 1999
-- État : Très bon
-- Full set : Boîtes, extrait d'archives
-- Révisée et garantie 24 mois

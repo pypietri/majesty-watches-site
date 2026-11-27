@@ -14,13 +14,9 @@ photos:
   - /images/montres/audemars-piguet-royal-oak-kasparov---brown-havana---39-mm---2012-4.jpg
   - /images/montres/audemars-piguet-royal-oak-kasparov---brown-havana---39-mm---2012-5.jpg
   - /images/montres/audemars-piguet-royal-oak-kasparov---brown-havana---39-mm---2012-6.jpg
+boitier: 39 mm
+annee: 03/2013
+etat: Excellent
+contenu: Boîtes, extrait d'archives AP
+garantie: Garantie
 ---
-
-**Audemars Piguet Royal Oak 'Kasparov' - Brown 'Havana'**
-
-- Référence : 26300ST
-- Boîtier : 39 mm
-- Année : 03/2013
-- État : Excellent
-- Set : Boîtes, extrait d'archives AP
-- Garantie

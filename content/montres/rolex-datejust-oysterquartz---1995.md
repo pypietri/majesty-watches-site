@@ -9,13 +9,9 @@ publie: true
 date: '2026-10-30'
 photos:
   - /images/montres/rolex-datejust-oysterquartz---1995-1.jpg
+boitier: 36 mm
+annee: '1990'
+etat: Très bon
+contenu: Boîte, papiers, livrets
+garantie: Garantie
 ---
-
-**Rolex Datejust OysterQuartz**
-
-- Référence : 17014
-- Boîtier : 36 mm
-- Année : 1990
-- État : Très bon
-- Full set : Boîte, papiers, livrets
-- Garantie

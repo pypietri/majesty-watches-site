@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-daytona-panda---2026---new-4.jpg
   - /images/montres/rolex-daytona-panda---2026---new-5.jpg
   - /images/montres/rolex-daytona-panda---2026---new-6.jpg
+boitier: 40 mm
+annee: '2026'
+etat: Neuf — Jamais porté
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2031
 ---
-
-**Rolex Daytona 'Panda'**
-
-- Référence : 126500LN
-- Boîtier : 40 mm
-- Année : 2026
-- État : Neuf — Jamais porté
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2031

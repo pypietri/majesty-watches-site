@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-rootbeer---2021-4.jpg
   - /images/montres/rolex-gmt-master-ii-rootbeer---2021-5.jpg
   - /images/montres/rolex-gmt-master-ii-rootbeer---2021-6.jpg
+boitier: 40 mm
+annee: '2022'
+etat: Excellent
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex GMT Master II 'Rootbeer'**
-
-- Référence : 126711CHNR
-- Boîtier : 40 mm
-- Année : 2022
-- État : Excellent
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

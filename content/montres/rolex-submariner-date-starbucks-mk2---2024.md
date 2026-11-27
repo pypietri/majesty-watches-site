@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-submariner-date-starbucks-mk2---2024-4.jpg
   - /images/montres/rolex-submariner-date-starbucks-mk2---2024-5.jpg
   - /images/montres/rolex-submariner-date-starbucks-mk2---2024-6.jpg
+boitier: 41 mm
+annee: 2024 — Première main
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2029
 ---
-
-**Rolex Submariner Date 'Starbucks' MK2**
-
-- Référence : 126610LV
-- Boîtier : 41 mm
-- Année : 2024 — Première main
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2029

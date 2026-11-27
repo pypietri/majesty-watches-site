@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-sprite---oyster---2024---new-4.jpg
   - /images/montres/rolex-gmt-master-ii-sprite---oyster---2024---new-5.jpg
   - /images/montres/rolex-gmt-master-ii-sprite---oyster---2024---new-6.jpg
+boitier: 40 mm
+annee: '2024'
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2029
 ---
-
-**Rolex GMT Master II 'Sprite'**
-
-- Référence : 126720VTNR
-- Boîtier : 40 mm
-- Année : 2024
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2029

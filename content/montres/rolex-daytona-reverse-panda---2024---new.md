@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-daytona-reverse-panda---2024---new-4.jpg
   - /images/montres/rolex-daytona-reverse-panda---2024---new-5.jpg
   - /images/montres/rolex-daytona-reverse-panda---2024---new-6.jpg
+boitier: 40 mm
+annee: '2019'
+etat: Comme neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Daytona 'Reverse Panda'**
-
-- Référence : 116500LN
-- Boîtier : 40 mm
-- Année : 2019
-- État : Comme neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

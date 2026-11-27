@@ -14,14 +14,11 @@ photos:
   - /images/montres/rolex-submariner---40-mm---1967-4.jpg
   - /images/montres/rolex-submariner---40-mm---1967-5.jpg
   - /images/montres/rolex-submariner---40-mm---1967-6.jpg
+boitier: 40 mm
+annee: '1967'
+etat: Très bon
+infos: |-
+  Bracelet : 93150 — bracelet tardif (dans le cadre d’un service) - Code clasp : V5
+  Vendue avec boîte, papiers de service Rolex et deux factures de services Rolex
+  Révisée complètement et garantie 24 mois.
 ---
-
-**Rolex Submariner — Patine exceptionnelle**
-
-- Référence : 5513
-- Boîtier : 40 mm
-- Bracelet : 93150 — bracelet tardif (dans le cadre d’un service) - Code clasp : V5
-- Année : 1967
-- État : Très bon
-- Vendue avec boîte, papiers de service Rolex et deux factures de services Rolex
-- Révisée complètement et garantie 24 mois.

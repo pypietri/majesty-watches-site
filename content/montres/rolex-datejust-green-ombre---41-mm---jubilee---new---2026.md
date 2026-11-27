@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-green-ombre---41-mm---jubilee---new---2026-4.jpg
   - /images/montres/rolex-datejust-green-ombre---41-mm---jubilee---new---2026-5.jpg
   - /images/montres/rolex-datejust-green-ombre---41-mm---jubilee---new---2026-6.jpg
+boitier: 41 mm
+annee: 06/2026
+etat: Neuve — Jamais portée
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2031
 ---
-
-**Rolex Datejust Green Ombre**
-
-- Référence : 126334
-- Boîtier : 41 mm
-- Année : 06/2026
-- État : Neuve — Jamais portée
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2031

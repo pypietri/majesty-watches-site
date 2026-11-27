@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-green-mint---41-mm---oyster---2025---new-4.jpg
   - /images/montres/rolex-datejust-green-mint---41-mm---oyster---2025---new-5.jpg
   - /images/montres/rolex-datejust-green-mint---41-mm---oyster---2025---new-6.jpg
+boitier: 41 mm
+annee: '2025'
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2030
 ---
-
-**Rolex Datejust Green Mint - Oyster**
-
-- Référence : 126334
-- Boîtier : 41 mm
-- Année : 2025
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2030

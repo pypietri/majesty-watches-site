@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-blue---41-mm---oyster---2023---neuf-4.jpg
   - /images/montres/rolex-datejust-blue---41-mm---oyster---2023---neuf-5.jpg
   - /images/montres/rolex-datejust-blue---41-mm---oyster---2023---neuf-6.jpg
+boitier: 41 mm
+annee: '2023'
+etat: Neuve
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2028
 ---
-
-**Rolex Datejust - Blue**
-
-- Référence : 126300
-- Boîtier : 41 mm
-- Année : 2023
-- État : Neuve
-- Full set : Boîte, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2028

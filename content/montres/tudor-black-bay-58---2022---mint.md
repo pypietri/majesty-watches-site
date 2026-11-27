@@ -14,13 +14,9 @@ photos:
   - /images/montres/tudor-black-bay-58---2022---mint-4.jpg
   - /images/montres/tudor-black-bay-58---2022---mint-5.jpg
   - /images/montres/tudor-black-bay-58---2022---mint-6.jpg
+boitier: 39 mm
+annee: '2022'
+etat: Très bon
+contenu: Boîtes, carte de garantie, livrets
+garantie: Garantie manufacture jusqu'en 2027
 ---
-
-**Tudor Black Bay 58**
-
-- Référence : 79030B
-- Boîtier : 39 mm
-- Année : 2022
-- État : Très bon
-- Full set : Boîtes, carte de garantie, livrets
-- Garantie manufacture jusqu'en 2027

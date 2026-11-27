@@ -14,13 +14,9 @@ photos:
   - /images/montres/cartier-tank-must---grand-modele---2026---neuve-4.jpg
   - /images/montres/cartier-tank-must---grand-modele---2026---neuve-5.jpg
   - /images/montres/cartier-tank-must---grand-modele---2026---neuve-6.jpg
+boitier: 33,7 x 25,5 mm
+annee: '2026'
+garantie: Garantie Cartier
+etat: Neuf
+contenu: Boîte, carte de garantie, livrets
 ---
-
-**Cartier Tank Must - Grand Modèle**
-
-- Référence : WSTA0136
-- Boîtier : 33,7 x 25,5 mm
-- Année : 2026
-- Garantie Cartier
-- État : Neuf
-- Full set : Boîte, carte de garantie, livrets

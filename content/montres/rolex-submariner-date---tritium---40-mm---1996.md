@@ -13,13 +13,9 @@ photos:
   - /images/montres/rolex-submariner-date---tritium---40-mm---1996-3.jpg
   - /images/montres/rolex-submariner-date---tritium---40-mm---1996-4.jpg
   - /images/montres/rolex-submariner-date---tritium---40-mm---1996-5.jpg
+boitier: 40 mm
+annee: 1994 — Série S
+etat: Très bon
+contenu: Boîte, papiers, livrets & tags
+garantie: Garantie
 ---
-
-**Rolex Submariner Date 'Swiss T-25'**
-
-- Référence : 16610
-- Boîtier : 40 mm
-- Année : 1994 — Série S
-- État : Très bon
-- Full set : Boîte, papiers, livrets & tags
-- Garantie

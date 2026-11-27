@@ -12,13 +12,9 @@ photos:
   - /images/montres/cartier-tank-solo-xl---automatic---2013-2.webp
   - /images/montres/cartier-tank-solo-xl---automatic---2013-3.webp
   - /images/montres/cartier-tank-solo-xl---automatic---2013-4.webp
+boitier: 31 x 41 mm
+annee: '2018'
+garantie: Garantie Cartier
+etat: Excellent
+contenu: Boîte, carte de garantie
 ---
-
-**Cartier Tank Solo XL**
-
-- Référence : W5200027
-- Boîtier : 31 x 41 mm
-- Année : 2018
-- Garantie Cartier
-- État : Excellent
-- Full set : Boîte, carte de garantie

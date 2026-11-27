@@ -34,8 +34,23 @@ data.forEach((m, idx) => {
     date,
     photos,
   };
-  const body = (m.x || '').trim() + '\n';
-  fs.writeFileSync(path.join(outDir, `${slug}.md`), `---\n${yaml.dump(fm, { lineWidth: 200 })}---\n\n${body}`);
+  // Fiche technique : « Clé : valeur » -> champs simples éditables dans le CMS
+  const infos = [];
+  for (const raw of (m.x || '').split('\n')) {
+    if (!/^\s*-\s+/.test(raw)) continue;
+    const l = raw.replace(/^\s*-\s+/, '').replace(/\*\*/g, '').trim();
+    const kv = l.match(/^([^:]{2,30}?)\s*:\s+(.+)$/);
+    const k = kv ? kv[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+    if (k === 'reference') continue;
+    else if (k === 'boitier') fm.boitier = kv[2];
+    else if (k === 'annee') fm.annee = kv[2];
+    else if (k === 'etat' || k === 'condition') fm.etat = kv[2];
+    else if (k === 'set' || k === 'full set') fm.contenu = kv[2];
+    else if (/^garantie/i.test(l) || /^r[ée]vis[ée]e et garantie/i.test(l)) fm.garantie = l;
+    else infos.push(l);
+  }
+  if (infos.length) fm.infos = infos.join('\n');
+  fs.writeFileSync(path.join(outDir, `${slug}.md`), `---\n${yaml.dump(fm, { lineWidth: 200 })}---\n`);
 });
 
 fs.writeFileSync(path.join(root, 'tools/seed/downloads.json'), JSON.stringify(downloads, null, 1));

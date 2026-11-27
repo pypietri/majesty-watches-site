@@ -14,13 +14,9 @@ photos:
   - /images/montres/cartier-santos---green---moyen-modele---2024-4.jpg
   - /images/montres/cartier-santos---green---moyen-modele---2024-5.jpg
   - /images/montres/cartier-santos---green---moyen-modele---2024-6.jpg
+boitier: 27 mm x 37 mm
+annee: '2024'
+garantie: Garantie (Cartier Care) jusqu'en 2032
+etat: Excellent
+contenu: Boîte, carte de garantie, livrets
 ---
-
-**Cartier Santos - Green - Moyen Modèle**
-
-- Référence : WSSA0061
-- Boîtier : 27 mm x 37 mm
-- Année : 2024
-- Garantie (Cartier Care) jusqu'en 2032
-- État : Excellent
-- Full set : Boîte, carte de garantie, livrets

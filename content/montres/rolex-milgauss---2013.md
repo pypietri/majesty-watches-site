@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-milgauss---2013-4.jpg
   - /images/montres/rolex-milgauss---2013-5.jpg
   - /images/montres/rolex-milgauss---2013-6.jpg
+boitier: 40 mm
+annee: '2013'
+etat: Excellent
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex Milgauss**
-
-- Référence : 116400
-- Boîtier : 40 mm
-- Année : 2013
-- État : Excellent
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-gmt-master-ii-sprite-jubilee-new-2025-4.jpg
   - /images/montres/rolex-gmt-master-ii-sprite-jubilee-new-2025-5.jpg
   - /images/montres/rolex-gmt-master-ii-sprite-jubilee-new-2025-6.jpg
+boitier: 40 mm
+annee: '2023'
+etat: Comme neuf
+contenu: Boîte, carte de garantie, livrets
+garantie: Garantie
 ---
-
-**Rolex GMT Master II 'Sprite'**
-
-- Référence : 126720VTNR
-- Boîtier : 40 mm
-- Année : 2023
-- État : Comme neuf
-- Full set : Boîte, carte de garantie, livrets
-- Garantie

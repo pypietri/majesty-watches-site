@@ -14,13 +14,9 @@ photos:
   - /images/montres/rolex-datejust-silver---36-mm---jubilee---1990-4.jpg
   - /images/montres/rolex-datejust-silver---36-mm---jubilee---1990-5.jpg
   - /images/montres/rolex-datejust-silver---36-mm---jubilee---1990-6.jpg
+boitier: 36 mm
+annee: '1984'
+etat: Très bon
+contenu: Boîte, papiers, livrets
+garantie: Garantie
 ---
-
-**Rolex Datejust Silver**
-
-- Référence : 16030
-- Boîtier : 36 mm
-- Année : 1984
-- État : Très bon
-- Full set : Boîte, papiers, livrets
-- Garantie
