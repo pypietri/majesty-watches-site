@@ -151,7 +151,7 @@ h1, h2, h3, p { margin: 0; }
 .maison:hover { color: #fff; }
 .maison:hover::before { transform: none; }
 .maison-n { font: 200 clamp(26px, 2.6vw, 40px)/1.05 var(--font); text-transform: uppercase; letter-spacing: .02em; max-width: 10ch; position: relative; z-index: 1; }
-.maison-logo { display: block; position: relative; z-index: 1; width: min(62%, 230px); height: clamp(44px, 5vw, 72px); background: currentColor; -webkit-mask: var(--logo) left center / contain no-repeat; mask: var(--logo) left center / contain no-repeat; }
+.maison-logo { display: block; position: relative; z-index: 1; width: min(62%, 230px); height: clamp(52px, 6vw, 84px); background: currentColor; -webkit-mask: var(--logo) left center / contain no-repeat; mask: var(--logo) left center / contain no-repeat; }
 .maison-c { display: inline-flex; align-items: center; gap: 10px; font: 600 10.5px/1 var(--font); letter-spacing: .22em; text-transform: uppercase; position: relative; z-index: 1; }
 .maison-img { position: absolute; right: -4%; bottom: -10%; width: 42%; height: auto; aspect-ratio: 1; object-fit: contain; mix-blend-mode: multiply; opacity: .9; transform: rotate(-8deg) scale(.95); transition: transform .9s var(--ease), opacity .5s, filter .5s; z-index: 0; }
 .maison:hover .maison-img { transform: rotate(0) scale(1.05); mix-blend-mode: normal; filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .35)); }

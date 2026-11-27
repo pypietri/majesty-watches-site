@@ -251,7 +251,7 @@ function writePage(urlPath, html) {
   fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
 
-function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f : null; }
+function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f.replace('.svg', '.png') : null; }
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
 function ringSection() {
@@ -600,6 +600,24 @@ await Promise.all(Array.from({ length: 4 }, async () => {
   while (queue.length) { const s = queue.shift(); try { await processImage(s); } catch (e) { console.warn('Image ignorée', s, e.message); imgMap.set(s, null); } done++; }
 }));
 copyAssets();
+// Logos des maisons : rasterisés, recadrés et convertis en masque (la couleur vient du CSS)
+async function buildLogos() {
+  const dir = path.join(ROOT, 'public/assets/marques');
+  if (!fs.existsSync(dir)) return;
+  for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.svg'))) {
+    try {
+      const svg = fs.readFileSync(path.join(dir, f));
+      const { data, info } = await sharp(svg, { density: 600 }).resize({ height: 600, withoutEnlargement: false }).flatten({ background: '#fff' }).trim({ threshold: 12 }).resize({ height: 180 }).raw().toBuffer({ resolveWithObject: true });
+      const out = Buffer.alloc(info.width * info.height * 4);
+      for (let i = 0, j = 0; i < data.length; i += info.channels, j += 4) {
+        const m = Math.min(data[i], data[i + 1], data[i + 2]);
+        out[j] = out[j + 1] = out[j + 2] = 0; out[j + 3] = Math.min(255, Math.max(0, (255 - m) * 3 - 20));
+      }
+      await sharp(out, { raw: { width: info.width, height: info.height, channels: 4 } }).png({ compressionLevel: 9 }).toFile(path.join(DIST, 'assets/marques', f.replace('.svg', '.png')));
+    } catch (e) { console.warn('Logo ignoré', f, e.message); }
+  }
+}
+await buildLogos();
 pageHome();
 pageCollection();
 montres.forEach(pageMontre);
