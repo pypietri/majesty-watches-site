@@ -18,6 +18,6 @@ jobs:
         run: |
           git config user.name "majesty-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add public
+          git add public tools/media
           git diff --cached --quiet || git commit -m "Photos importées depuis Framer"
           git push
