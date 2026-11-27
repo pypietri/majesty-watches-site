@@ -105,8 +105,6 @@ content:
           - { name: texte, label: Texte d’introduction, type: text }
           - { name: image, label: Grande photo, type: image }
           - { name: montres_tournantes, label: Montres qui défilent (section Vendre), type: image, list: true }
-          - { name: citation, label: Citation, type: text }
-          - { name: citation_auteur, label: Auteur de la citation, type: string }
       - name: google
         label: Fiche Google
         type: object

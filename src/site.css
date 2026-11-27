@@ -119,18 +119,24 @@ h1, h2, h3, p { margin: 0; }
 @keyframes tick { to { transform: translateX(-50%); } }
 
 /* ——— Anneau 3D de la collection ——— */
-.ring { position: relative; height: 320vh; background: #fff; }
-.ring-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: calc(var(--hd) + 24px) 0 36px; }
+.ring { position: relative; background: #fff; padding: clamp(80px, 9vw, 130px) 0 clamp(64px, 7vw, 110px); overflow: hidden; }
+.ring-in { display: grid; gap: clamp(10px, 2vw, 24px); }
 .ring-hd { width: 100%; text-align: center; }
 .ring-hd .eyebrow { justify-content: center; }
 .ring-hd .eyebrow::after { content: ""; width: 28px; height: 1px; background: currentColor; }
-.ring-stage { position: relative; perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
+.ring-stage { position: relative; height: clamp(360px, 46vw, 600px); perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
 .ring-stage.is-drag { cursor: grabbing; }
 .ring-track { --r: 640px; --s: 340px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
 .ring-it { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .3s, filter .3s; }
 .ring-it img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
-.ring-floor { position: absolute; left: 50%; bottom: 12%; width: 70%; height: 90px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(23, 51, 82, .14), transparent 70%); filter: blur(8px); pointer-events: none; }
-.ring-info { width: 100%; display: flex; justify-content: center; text-align: center; }
+.ring-floor { position: absolute; left: 50%; bottom: 4%; width: 70%; height: 90px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(23, 51, 82, .14), transparent 70%); filter: blur(8px); pointer-events: none; }
+.ring-info { width: 100%; display: flex; justify-content: center; align-items: center; gap: clamp(20px, 5vw, 64px); text-align: center; }
+.ring-btn { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; color: var(--navy); display: grid; place-items: center; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
+.ring-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.ring-btn svg { width: 18px; height: 18px; }
+.ring-btn[data-ring-prev] svg { transform: rotate(180deg); }
+.ring-now em { font: 600 10px/1 var(--font); font-style: normal; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line-2); padding-bottom: 4px; justify-self: center; }
+.ring-now { min-width: min(320px, 50vw); }
 .ring-now { justify-items: center; }
 .ring-now { display: grid; gap: 8px; }
 .ring-now span { font: 400 14px/1.2 var(--font); letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
@@ -145,6 +151,7 @@ h1, h2, h3, p { margin: 0; }
 .maison:hover { color: #fff; }
 .maison:hover::before { transform: none; }
 .maison-n { font: 200 clamp(26px, 2.6vw, 40px)/1.05 var(--font); text-transform: uppercase; letter-spacing: .02em; max-width: 10ch; position: relative; z-index: 1; }
+.maison-logo { display: block; position: relative; z-index: 1; width: min(62%, 230px); height: clamp(44px, 5vw, 72px); background: currentColor; -webkit-mask: var(--logo) left center / contain no-repeat; mask: var(--logo) left center / contain no-repeat; }
 .maison-c { display: inline-flex; align-items: center; gap: 10px; font: 600 10.5px/1 var(--font); letter-spacing: .22em; text-transform: uppercase; position: relative; z-index: 1; }
 .maison-img { position: absolute; right: -4%; bottom: -10%; width: 42%; height: auto; aspect-ratio: 1; object-fit: contain; mix-blend-mode: multiply; opacity: .9; transform: rotate(-8deg) scale(.95); transition: transform .9s var(--ease), opacity .5s, filter .5s; z-index: 0; }
 .maison:hover .maison-img { transform: rotate(0) scale(1.05); mix-blend-mode: normal; filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .35)); }
@@ -196,10 +203,6 @@ h1, h2, h3, p { margin: 0; }
 .spin img.on { opacity: 1; transform: none; }
 
 /* ——— Citation ——— */
-.quote { padding: clamp(80px, 10vw, 150px) 0; }
-.quote blockquote { margin: 0; padding: clamp(44px, 5vw, 76px) clamp(28px, 6vw, 100px); color: var(--navy); text-align: center; }
-.quote p { font: 200 clamp(22px, 2.5vw, 36px)/1.4 var(--font); color: var(--navy); }
-.quote footer { margin-top: 32px; font: 600 10.5px/1 var(--font); letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
 
 /* ——— Avis : vidéo océan + carte ——— */
 .reviews { position: relative; overflow: hidden; padding: clamp(80px, 11vw, 160px) 0; background: var(--deep); }
@@ -364,12 +367,16 @@ a.g-score:hover { border-color: var(--navy); }
   .hd.is-open .hd-drawer { max-height: 80vh; }
   .home .hd { position: sticky; }
   .home .hd:not(.is-scrolled):not(.is-open) { background: rgba(255, 255, 255, .95); }
-  .hero { min-height: auto; display: block; background: #fff; }
-  .hero-bg { position: relative; height: 56svh; }
-  .hero-bg img { object-position: 82% 50%; }
-  .hero::after { display: none; }
-  .hero > .wrap { padding-top: 40px; padding-bottom: 56px; }
-  .hero-btns { max-width: none; }
+  .hero { min-height: calc(100svh - var(--hd)); align-items: flex-end; background: #fff; }
+  .hero-bg { bottom: 30%; }
+  .hero-bg img { object-position: 81% 42%; }
+  .hero::after { background: linear-gradient(180deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .92) 62%, #fff 72%); }
+  .hero > .wrap { padding-top: 0; padding-bottom: 26px; }
+  .hero .eyebrow { font-size: 9.5px; letter-spacing: .2em; }
+  .hero .display { font-size: clamp(32px, 9.6vw, 46px); line-height: 1; margin-top: 12px; }
+  .hero .lead { display: none; }
+  .hero-btns { max-width: none; gap: 8px; margin-top: 24px; }
+  .hero-btns .btn { height: 50px; padding: 0 22px; }
   .hero .btn-white { border-color: var(--line-2); }
   .hero-foot { display: none; }
   .sell-grid { grid-template-columns: 1fr; text-align: center; }
@@ -389,8 +396,12 @@ a.g-score:hover { border-color: var(--navy); }
 }
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
-  .ring { height: 260vh; }
+  .ring-stage { height: 330px; }
   .ring-track { --r: 300px; --s: 190px; }
+  .ring-btn { width: 46px; height: 46px; }
+  .ring-now { min-width: 0; flex: 1; }
+  .ring-now strong { font-size: 24px; }
+  .maison-logo { width: 78%; height: 40px; }
   .maisons-grid { grid-template-columns: 1fr 1fr; }
   .maison { min-height: 170px; padding: 20px 18px; }
   .maison-n { font-size: 22px; }

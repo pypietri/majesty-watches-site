@@ -251,16 +251,17 @@ function writePage(urlPath, html) {
   fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
 
+function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f : null; }
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
 function ringSection() {
   const items = montres.filter(m => m.photos[0] && imgMap.get(m.photos[0]) && m.statut !== 'Vendue').slice(0, 12);
   return `<section class="ring" data-ring aria-label="La collection en 3D">
-  <div class="ring-sticky">
+  <div class="ring-in">
     <div class="ring-hd wrap">
       <p class="eyebrow">La collection</p>
       <h2 class="h2">Chaque pièce,<br>sous tous les angles</h2>
-      <span class="ring-hint">Faites défiler ou glissez pour tourner</span>
+      <span class="ring-hint">Glissez ou utilisez les flèches</span>
     </div>
     <div class="ring-stage" data-ring-stage>
       <div class="ring-track" data-ring-track style="--n:${items.length}">
@@ -269,7 +270,9 @@ function ringSection() {
       <div class="ring-floor" aria-hidden="true"></div>
     </div>
     <div class="ring-info wrap">
-      <div class="ring-now"><span data-ring-name>${esc(items[0] ? items[0].marque + ' ' + items[0].court : '')}</span><strong data-ring-price>${esc(items[0] ? priceLabel(items[0]) : '')}</strong></div>
+      <button class="ring-btn" type="button" data-ring-prev aria-label="Montre précédente">${icon.arrow}</button>
+      <a class="ring-now" data-ring-link href="${items[0] ? '/montres/' + items[0].slug + '/' : '/montres/'}"><span data-ring-name>${esc(items[0] ? items[0].marque + ' ' + items[0].court : '')}</span><strong data-ring-price>${esc(items[0] ? priceLabel(items[0]) : '')}</strong><em>Voir la fiche</em></a>
+      <button class="ring-btn" type="button" data-ring-next aria-label="Montre suivante">${icon.arrow}</button>
     </div>
   </div>
 </section>`;
@@ -323,7 +326,7 @@ ${ringSection()}
     <div class="sec-hd"><div><p class="eyebrow">Les maisons</p><h2 class="h2">Nos manufactures</h2></div><a class="link" href="/montres/">Toute la collection ${icon.arrow}</a></div>
     <div class="maisons-grid">
       ${marques.map(b => { const ms = montres.filter(m => m.marque === b); const ph = ms.find(m => m.photos[0])?.photos[0]; return `<a class="maison" href="/montres/?marque=${encodeURIComponent(b)}" data-reveal>
-        <span class="maison-n">${esc(b)}</span>
+        ${logoMarque(b) ? `<span class="maison-logo" role="img" aria-label="${esc(b)}" style="--logo:url('${logoMarque(b)}')"></span>` : `<span class="maison-n">${esc(b)}</span>`}
         <span class="maison-c">${ms.length} pièce${ms.length > 1 ? 's' : ''} ${icon.arrow}</span>
         ${ph ? img(ph, { sizes: '30vw', alt: '', cls: 'maison-img', w: 480 }) : ''}
       </a>`; }).join('')}
@@ -346,15 +349,6 @@ ${ringSection()}
       <p>${esc(site.recherche.intro)} ${esc(site.recherche.texte)}</p>
       <a class="btn btn-ghost" href="/recherche/">Lancer une recherche ${icon.arrow}</a>
     </div>
-  </div>
-</section>
-
-<section class="quote">
-  <div class="wrap-narrow">
-    <blockquote class="corners" data-reveal>
-      <p>${esc(A.citation)}</p>
-      <footer>${esc(A.citation_auteur)}</footer>
-    </blockquote>
   </div>
 </section>
 
@@ -593,7 +587,7 @@ function copyAssets() {
   fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource-variable/kumbh-sans/files/kumbh-sans-latin-wght-normal.woff2'), path.join(to, 'fonts/kumbh.woff2'));
   // Fichiers statiques du dossier public (logo, favicon…), hors photos des montres (traitées en webp)
   const pub = path.join(ROOT, 'public/assets');
-  if (fs.existsSync(pub)) for (const f of fs.readdirSync(pub)) fs.copyFileSync(path.join(pub, f), path.join(to, f));
+  if (fs.existsSync(pub)) fs.cpSync(pub, to, { recursive: true });
 }
 
 // ---------- Exécution ----------
