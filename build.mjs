@@ -19,6 +19,7 @@ fs.mkdirSync(CACHE, { recursive: true });
 // ---------- Contenu ----------
 const site = yaml.load(fs.readFileSync(path.join(ROOT, 'content/site.yml'), 'utf8'));
 const C = site.contact || {};
+const G = site.google || {};
 const phoneDigits = (C.telephone || '').replace(/[^\d+]/g, '');
 const waNumber = phoneDigits.replace(/^\+/, '').replace(/^0/, '33');
 const wa = (msg) => `https://wa.me/${waNumber}${msg ? '?text=' + encodeURIComponent(msg) : ''}`;
@@ -131,10 +132,16 @@ const icon = {
   ig: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></svg>',
   arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M4 12h15m-5-5 5 5-5 5"/></svg>',
   search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.4"/></svg>',
+  star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>',
+  google: '<svg class="g-logo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>',
+  watch: '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="16" cy="16" r="7.5"/><path d="M12 9.5 13 4h6l1 5.5M12 22.5l1 5.5h6l1-5.5M16 12v4l2.5 2"/></g></svg>',
+  swap: '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><path d="M6 12h19l-5-5M26 20H7l5 5"/></g></svg>',
+  box: '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><path d="m16 4 11 5.5v13L16 28 5 22.5v-13z"/><path d="m5 9.5 11 5.5 11-5.5M16 15v13"/></g></svg>',
+  shield: '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><path d="M16 4 6 8v7c0 6.5 4.3 11 10 13 5.7-2 10-6.5 10-13V8z"/><path d="m11.5 16 3.3 3.2 6-6.4"/></g></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.3" d="m5 12.5 4.2 4L19 7"/></svg>',
 };
 
-const logo = `<span class="logo"><img src="/assets/logo-mark.png" alt="" width="36" height="32"><span class="logo-word">Majesty<small>Watches</small></span></span>`;
+const logo = `<span class="logo"><img src="/assets/logo-mark.png" alt="" width="34" height="30"><span class="logo-word">Majesty</span></span>`;
 
 function layout({ title, description, canonical, body, ogImage, jsonld, bodyClass = '' }) {
   const fullTitle = title ? `${title} — Majesty Watches` : 'Majesty Watches — Montres de prestige, achat, vente & recherche';
@@ -153,11 +160,10 @@ function layout({ title, description, canonical, body, ogImage, jsonld, bodyClas
 <meta property="og:image" content="${og}">
 <meta property="og:url" content="${SITE_URL}${canonical}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#F4F1EB">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/favicon.png">
-<link rel="preload" href="/assets/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/kumbh.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=${BUILD}">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
 </head>
@@ -165,53 +171,41 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 <a class="skip" href="#contenu">Aller au contenu</a>
 <header class="hd" data-hd>
   <div class="hd-in">
-    <a href="/" class="hd-logo" aria-label="Majesty Watches — accueil">${logo}</a>
     <nav class="hd-nav" aria-label="Navigation principale">
       ${nav.map(([h, l]) => `<a href="${h}"${canonical.startsWith(h) ? ' aria-current="page"' : ''}>${l}</a>`).join('')}
     </nav>
+    <a href="/" class="hd-logo" aria-label="Majesty Watches — accueil">${logo}</a>
     <a class="hd-cta" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">${icon.wa}<span>WhatsApp</span></a>
     <button class="hd-burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
   </div>
   <div class="hd-drawer" data-drawer>
     ${nav.map(([h, l]) => `<a href="${h}">${l}</a>`).join('')}
-    <a href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
   </div>
 </header>
 <main id="contenu">
 ${body}
 </main>
 <footer class="ft">
-  <div class="wrap ft-grid">
-    <div class="ft-brand">
-      <a href="/" aria-label="Majesty Watches">${logo}</a>
-      <p>Achat, vente et recherche de montres de prestige. Des pièces authentiques, choisies avec exigence.</p>
+  <div class="wrap">
+    <a href="/" aria-label="Majesty Watches — accueil"><img class="ft-logo" src="/assets/logo-full.png" alt="Majesty Watches" width="120" height="109" loading="lazy"></a>
+    <div class="ft-grid">
+      <h3>Contact</h3>
+      <a href="${wa()}" target="_blank" rel="noopener">WhatsApp : ${esc(C.telephone)}</a>
+      <a href="mailto:${esc(C.email)}">${esc(C.email)}</a>
+      <a href="https://www.instagram.com/${esc(C.instagram)}/" target="_blank" rel="noopener">Instagram : @${esc(C.instagram)}</a>
+      ${G.lien ? `<a href="${esc(G.lien)}" target="_blank" rel="noopener">Nos avis Google</a>` : ''}
     </div>
-    <div>
-      <h3>Nous contacter</h3>
-      <ul>
-        <li><a href="${wa()}" target="_blank" rel="noopener">WhatsApp · ${esc(C.telephone)}</a></li>
-        <li><a href="tel:${phoneDigits}">${esc(C.telephone)}</a></li>
-        <li><a href="mailto:${esc(C.email)}">${esc(C.email)}</a></li>
-        <li><a href="https://www.instagram.com/${esc(C.instagram)}/" target="_blank" rel="noopener">Instagram · @${esc(C.instagram)}</a></li>
-      </ul>
+    <nav class="ft-nav" aria-label="Pied de page">
+      <a href="/montres/">Collection</a><a href="/vendre/">Vendre</a><a href="/recherche/">Recherche</a><a href="/contact/">Contact</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a>
+    </nav>
+    <div class="ft-bottom">
+      <span>© ${new Date().getFullYear()} Majesty Watches</span>
+      <span>Site créé par <a href="https://www.pierreyvespietri.com" target="_blank" rel="noopener">Pierre-Yves Pietri</a></span>
     </div>
-    <div>
-      <h3>Maison</h3>
-      <ul>
-        <li><a href="/montres/">La collection</a></li>
-        <li><a href="/vendre/">Vendre sa montre</a></li>
-        <li><a href="/recherche/">Recherche personnalisée</a></li>
-        <li><a href="/contact/">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="wrap ft-bottom">
-    <span>© ${new Date().getFullYear()} Majesty Watches</span>
-    <span><a href="/mentions-legales/">Mentions légales</a> · <a href="/confidentialite/">Confidentialité</a></span>
-    <span>Site par <a href="https://www.pierreyvespietri.com" target="_blank" rel="noopener">Pierre-Yves Pietri</a></span>
   </div>
 </footer>
-<a class="wa-float" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">${icon.wa}</a>
+<a class="wa-float" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">${icon.wa}<span>WhatsApp</span></a>
 <script src="/assets/site.js?v=${BUILD}" defer></script>
 </body>
 </html>`;
@@ -222,7 +216,7 @@ const BUILD = Date.now().toString(36);
 function badge(m) {
   if (m.statut === 'Réservée') return '<span class="tag tag-res">Réservée</span>';
   if (m.statut === 'Vendue') return '<span class="tag tag-sold">Vendue</span>';
-  if (m.statut === 'En arrivage') return '<span class="tag">En arrivage</span>';
+  if (m.statut === 'En arrivage') return '<span class="tag tag-arr">En arrivage</span>';
   if (m.nouveaute) return '<span class="tag tag-new">Nouveauté</span>';
   return '';
 }
@@ -239,12 +233,12 @@ function card(m, { eager = false } = {}) {
       ${img(a, { sizes: '(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 46vw', alt: m.nom, cls: 'i1', eager, w: 480 })}
       ${b ? img(b, { sizes: '(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 46vw', alt: '', cls: 'i2', w: 480 }) : ''}
       ${badge(m)}
+      <span class="card-price">${esc(priceLabel(m))}</span>
     </div>
     <div class="card-tx">
       <span class="card-brand">${esc(m.marque)}</span>
       <h3 class="card-name">${esc(m.court)}</h3>
-      ${m.detail ? `<p class="card-detail">${esc(m.detail)}</p>` : ''}
-      <div class="card-meta"><span>${m.reference ? 'Réf. ' + esc(m.reference) : ''}</span><span class="card-price">${esc(priceLabel(m))}</span></div>
+      <p class="card-detail">${esc([m.detail, m.reference ? 'Réf. ' + m.reference : ''].filter(Boolean).join(' · '))}</p>
     </div>
   </a>
 </article>`;
@@ -257,83 +251,91 @@ function writePage(urlPath, html) {
   fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
 
+function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
+
 function pageHome() {
   const A = site.accueil;
   const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue').slice(0, 8);
   const list = nouveaux.length >= 4 ? nouveaux : montres.slice(0, 8);
+  const dispo = montres.filter(m => m.statut !== 'Vendue').length;
+  const tick = [...marques, ...marques, ...marques, ...marques].map(b => `<a href="/montres/?marque=${encodeURIComponent(b)}">${esc(b)}</a>`).join('');
+  const tournantes = (A.montres_tournantes || []).filter(Boolean);
+  const avis = site.temoignages || [];
   const body = `
-<section class="hero">
-  <div class="wrap hero-grid">
+<section class="hero" data-hero>
+  <div class="hero-bg">${img(A.image, { sizes: '100vw', alt: 'Montre de prestige — Majesty Watches', eager: true, w: 1600 })}</div>
+  <div class="wrap">
     <div class="hero-tx">
       <p class="eyebrow" data-reveal>${esc(A.surtitre)}</p>
       <h1 class="display" data-reveal>${esc(A.titre)}</h1>
       <p class="lead" data-reveal>${esc(A.texte)}</p>
-      <div class="btns" data-reveal>
-        <a class="btn" href="/montres/">Découvrir la collection ${icon.arrow}</a>
-        <a class="btn btn-ghost" href="/vendre/">Vendre ma montre</a>
+      <div class="hero-btns" data-reveal>
+        <a class="btn" href="/montres/">Découvrez notre collection ${icon.arrow}</a>
+        <a class="btn btn-white" href="/vendre/">Vendez votre montre ${icon.arrow}</a>
+        <a class="btn btn-white" href="/recherche/">Recherche personnalisée ${icon.arrow}</a>
       </div>
     </div>
-    <div class="hero-media" data-reveal>
-      ${img(A.image, { sizes: '(min-width: 900px) 46vw, 100vw', alt: 'Montre de prestige Majesty Watches', eager: true, w: 1600 })}
-      <span class="hero-count"><strong>${montres.filter(m => m.statut !== 'Vendue').length}</strong> pièces disponibles</span>
-    </div>
   </div>
+  <div class="hero-foot"><div class="wrap"><span>${dispo} pièces disponibles</span><span class="hero-scroll"><i></i>Défiler</span></div></div>
 </section>
+
+<section class="ticker" aria-label="Les maisons"><div class="ticker-track">${tick}</div></section>
 
 <section class="trust">
   <div class="wrap trust-grid">
-    ${(site.engagements || []).map((e, i) => `<div class="trust-it" data-reveal><span class="trust-n">0${i + 1}</span><h3>${esc(e.titre)}</h3><p>${esc(e.texte)}</p></div>`).join('')}
+    ${(site.engagements || []).map((e, i) => `<div class="trust-it" data-reveal>${[icon.watch, icon.swap, icon.box, icon.shield][i % 4]}<h3>${esc(e.titre)}</h3><p>${esc(e.texte)}</p></div>`).join('')}
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
     <div class="sec-hd">
-      <div><p class="eyebrow">Arrivages récents</p><h2 class="h2">Nouveautés</h2></div>
-      <a class="link" href="/montres/">Toute la collection ${icon.arrow}</a>
+      <div><p class="eyebrow">Arrivages récents</p><h2 class="h2">Nouvel arrivage</h2></div>
+      <a class="link" href="/montres/">Voir toute la collection ${icon.arrow}</a>
     </div>
-    <div class="grid">${list.map((m, i) => card(m, { eager: false })).join('')}</div>
+    <div class="grid">${list.map(m => card(m)).join('')}</div>
   </div>
 </section>
 
-<section class="brands">
-  <div class="wrap">
-    <p class="eyebrow">Les maisons</p>
-    <ul class="brands-list">${marques.map(b => `<li><a href="/montres/?marque=${encodeURIComponent(b)}">${esc(b)}</a></li>`).join('')}</ul>
-  </div>
-</section>
-
-<section class="duo">
-  <div class="wrap duo-grid">
-    <a class="duo-it" href="/vendre/" data-reveal>
+<section class="sell">
+  <div class="wrap sell-grid">
+    <div class="sell-col" data-reveal>
       <p class="eyebrow">Vendre</p>
       <h2 class="h2">${esc(site.vendre.titre)}</h2>
       <p>${esc(site.vendre.intro)}</p>
-      <span class="link">Faire estimer ma montre ${icon.arrow}</span>
-    </a>
-    <a class="duo-it" href="/recherche/" data-reveal>
+      <a class="btn btn-ghost" href="/vendre/">Vendez votre montre ${icon.arrow}</a>
+    </div>
+    <div class="spin corners" data-spin data-reveal>${tournantes.map((t, i) => imgMap.get(t) ? `<img src="${imgMap.get(t).url[900]}" alt="" loading="lazy"${i === 0 ? ' class="on"' : ''}>` : '').join('')}</div>
+    <div class="sell-col r" data-reveal>
       <p class="eyebrow">Rechercher</p>
       <h2 class="h2">${esc(site.recherche.titre)}</h2>
       <p>${esc(site.recherche.intro)} ${esc(site.recherche.texte)}</p>
-      <span class="link">Lancer une recherche ${icon.arrow}</span>
-    </a>
+      <a class="btn btn-ghost" href="/recherche/">Lancer une recherche ${icon.arrow}</a>
+    </div>
   </div>
 </section>
 
 <section class="quote">
   <div class="wrap-narrow">
-    <blockquote data-reveal>
+    <blockquote class="corners" data-reveal>
       <p>${esc(A.citation)}</p>
       <footer>${esc(A.citation_auteur)}</footer>
     </blockquote>
   </div>
 </section>
 
-<section class="sec reviews">
+<section class="reviews" aria-label="Avis clients">
+  <video autoplay muted loop playsinline preload="none" poster="" data-lazy-video><source data-src="/assets/ocean.mp4" type="video/mp4"></video>
   <div class="wrap">
-    <div class="sec-hd"><div><p class="eyebrow">Ils nous ont fait confiance</p><h2 class="h2">Nos clients</h2></div></div>
-    <div class="reviews-grid">
-      ${(site.temoignages || []).map(t => `<figure class="review" data-reveal><span class="review-q" aria-hidden="true">“</span><blockquote>${esc(t.texte)}</blockquote><figcaption>${esc(t.nom)}</figcaption></figure>`).join('')}
+    <div class="reviews-card corners" data-reveal>
+      <p class="eyebrow">Ils nous ont fait confiance</p>
+      <h2 class="h2">Nos clients</h2>
+      ${G.note ? `<${G.lien ? `a href="${esc(G.lien)}" target="_blank" rel="noopener"` : 'div'} class="g-score">${icon.google}<strong>${esc(G.note)}</strong>${stars(parseFloat(String(G.note).replace(',', '.')) || 5)}<span>${G.nombre ? esc(G.nombre) + ' avis Google' : 'Avis Google'}</span></${G.lien ? 'a' : 'div'}>` : ''}
+      <div class="rv-track" data-rv>
+        ${avis.map((t, i) => `<figure class="rv${i === 0 ? ' on' : ''}"><blockquote>“${esc(t.texte)}”</blockquote><figcaption>${stars(t.etoiles || 5)}${esc(t.nom)}</figcaption></figure>`).join('')}
+      </div>
+      ${avis.length > 1 ? `<div class="rv-dots" role="tablist">${avis.map((_, i) => `<button aria-label="Avis ${i + 1}" aria-current="${i === 0}"></button>`).join('')}</div>` : ''}
+      ${G.lien ? `<a class="link" href="${esc(G.lien)}" target="_blank" rel="noopener">Lire tous nos avis sur Google ${icon.arrow}</a>` : ''}
     </div>
   </div>
 </section>
@@ -341,7 +343,7 @@ function pageHome() {
 ${ctaBand()}`;
   writePage('/', layout({ title: '', canonical: '/', body, bodyClass: 'home', jsonld: {
     '@context': 'https://schema.org', '@type': 'Store', name: 'Majesty Watches', url: SITE_URL, email: C.email, telephone: C.telephone,
-    sameAs: [`https://www.instagram.com/${C.instagram}/`], image: SITE_URL + '/assets/og.jpg', description: site.accueil.texte,
+    sameAs: [`https://www.instagram.com/${C.instagram}/`, G.lien].filter(Boolean), image: SITE_URL + '/assets/og.jpg', description: site.accueil.texte,
   } }));
 }
 
@@ -353,9 +355,9 @@ function ctaBand() {
       <h2 class="h2">Parlons-en directement.</h2>
     </div>
     <div class="cta-btns">
-      <a class="btn btn-light" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">${icon.wa} WhatsApp</a>
-      <a class="btn btn-line" href="tel:${phoneDigits}">${icon.phone} ${esc(C.telephone)}</a>
-      <a class="btn btn-line" href="mailto:${esc(C.email)}">${icon.mail} E-mail</a>
+      <a class="btn" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">${icon.wa} WhatsApp</a>
+      <a class="btn btn-ghost" href="tel:${phoneDigits}">${icon.phone} ${esc(C.telephone)}</a>
+      <a class="btn btn-ghost" href="mailto:${esc(C.email)}">${icon.mail} E-mail</a>
     </div>
   </div>
 </section>`;
@@ -554,11 +556,7 @@ function copyAssets() {
   const to = path.join(DIST, 'assets');
   fs.mkdirSync(path.join(to, 'fonts'), { recursive: true });
   for (const f of ['site.css', 'site.js']) fs.copyFileSync(path.join(ROOT, 'src', f), path.join(to, f));
-  const fsrc = path.join(ROOT, 'node_modules/@fontsource/cormorant-garamond/files');
-  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-500-normal.woff2'), path.join(to, 'fonts/cormorant-500.woff2'));
-  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-500-italic.woff2'), path.join(to, 'fonts/cormorant-500i.woff2'));
-  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-400-normal.woff2'), path.join(to, 'fonts/cormorant-400.woff2'));
-  fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2'), path.join(to, 'fonts/inter.woff2'));
+  fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource-variable/kumbh-sans/files/kumbh-sans-latin-wght-normal.woff2'), path.join(to, 'fonts/kumbh.woff2'));
   // Fichiers statiques du dossier public (logo, favicon…), hors photos des montres (traitées en webp)
   const pub = path.join(ROOT, 'public/assets');
   if (fs.existsSync(pub)) for (const f of fs.readdirSync(pub)) fs.copyFileSync(path.join(pub, f), path.join(to, f));
@@ -566,7 +564,7 @@ function copyAssets() {
 
 // ---------- Exécution ----------
 const t0 = Date.now();
-const toProcess = new Set([site.accueil.image, ...montres.flatMap(m => m.photos)]);
+const toProcess = new Set([site.accueil.image, ...(site.accueil.montres_tournantes || []), ...montres.flatMap(m => m.photos)]);
 let done = 0;
 const queue = [...toProcess].filter(Boolean);
 await Promise.all(Array.from({ length: 4 }, async () => {

@@ -30,10 +30,35 @@
   const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }) : null;
-  $$('[data-reveal], .hero-media').forEach((el, i) => {
+  $$('[data-reveal], [data-hero]').forEach((el, i) => {
     if (!io) return el.classList.add('is-in');
     el.style.transitionDelay = el.closest('.grid, .trust-grid, .reviews-grid') ? `${(i % 4) * 70}ms` : '';
     io.observe(el);
+  });
+
+  // Montres qui défilent (section Vendre)
+  const spin = $('[data-spin]');
+  if (spin) {
+    const imgs = $$('img', spin); let k = 0;
+    if (imgs.length > 1) setInterval(() => { imgs[k].classList.remove('on'); k = (k + 1) % imgs.length; imgs[k].classList.add('on'); }, 2600);
+  }
+
+  // Avis : carrousel automatique
+  const rv = $('[data-rv]');
+  if (rv) {
+    const items = $$('.rv', rv); const dots = $$('.rv-dots button'); let r = 0, timer;
+    const show = i => { r = i; items.forEach((x, j) => x.classList.toggle('on', j === i)); dots.forEach((d, j) => d.setAttribute('aria-current', j === i)); };
+    const auto = () => { clearInterval(timer); if (items.length > 1) timer = setInterval(() => show((r + 1) % items.length), 7000); };
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); auto(); }));
+    auto();
+  }
+
+  // Vidéo de fond chargée seulement quand elle approche de l’écran
+  $$('[data-lazy-video]').forEach(v => {
+    const load = () => { $$('source', v).forEach(s => s.src = s.dataset.src); v.load(); v.play().catch(() => {}); };
+    if (!('IntersectionObserver' in window)) return load();
+    const o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { load(); o.disconnect(); } }, { rootMargin: '400px' });
+    o.observe(v);
   });
 
   // Collection : filtres, recherche, tri

@@ -6,11 +6,22 @@ contact:
 
 accueil:
   surtitre: Achat · Vente · Recherche de montres de prestige
-  titre: Des montres d’exception, choisies une à une.
+  titre: Trouvez la montre qui vous correspond
   texte: Des pièces uniques, sélectionnées avec soin. Pour le plaisir d’offrir, de collectionner, ou tout simplement de porter une montre qui a du caractère.
   image: /images/site/hero.jpg
+  montres_tournantes:
+    - /images/site/tourne-1.png
+    - /images/site/tourne-2.png
+    - /images/site/tourne-3.png
+    - /images/site/tourne-4.png
+    - /images/site/tourne-5.png
   citation: Chez Majesty Watches, la confiance est au cœur de chaque échange. Acquérir une montre d’exception est un moment important — notre mission est de le rendre fluide, sécurisé et pleinement satisfaisant.
   citation_auteur: Mickaël — fondateur de Majesty Watches
+
+google:
+  note: ""
+  nombre: ""
+  lien: ""
 
 engagements:
   - titre: Montres authentiques

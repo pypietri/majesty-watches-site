@@ -104,8 +104,16 @@ content:
           - { name: titre, label: Grand titre, type: string }
           - { name: texte, label: Texte d’introduction, type: text }
           - { name: image, label: Grande photo, type: image }
+          - { name: montres_tournantes, label: Montres qui défilent (section Vendre), type: image, list: true }
           - { name: citation, label: Citation, type: text }
           - { name: citation_auteur, label: Auteur de la citation, type: string }
+      - name: google
+        label: Fiche Google
+        type: object
+        fields:
+          - { name: note, label: "Note Google (ex. : 5,0)", type: string }
+          - { name: nombre, label: Nombre d’avis, type: string }
+          - { name: lien, label: Lien vers la fiche Google, type: string }
       - name: engagements
         label: Engagements (4 points)
         type: object
@@ -120,6 +128,7 @@ content:
         fields:
           - { name: nom, label: Prénom, type: string }
           - { name: texte, label: Avis, type: text }
+          - { name: etoiles, label: Étoiles (1 à 5), type: number }
       - name: vendre
         label: Page « Vendre »
         type: object
