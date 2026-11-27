@@ -36,6 +36,36 @@
     io.observe(el);
   });
 
+  // Anneau 3D : tourne avec le défilement + glisser
+  const ring = $('[data-ring]');
+  if (ring) {
+    const track = $('[data-ring-track]', ring), stage = $('[data-ring-stage]', ring);
+    const items = $$('.ring-it', ring), n = items.length, step = 360 / n;
+    const nameEl = $('[data-ring-name]', ring), priceEl = $('[data-ring-price]', ring);
+    let drag = 0, base = 0, startX = null, raf = null, cur = 0, front = -1;
+    const target = () => { const r = ring.getBoundingClientRect(); const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))); return -p * 360 * 1.15 + drag; };
+    const render = () => {
+      cur += (target() - cur) * 0.12;
+      track.style.setProperty('--a', cur.toFixed(2) + 'deg');
+      let best = 0, bestD = 999;
+      items.forEach((it, i) => {
+        let d = ((i * step + cur) % 360 + 540) % 360 - 180; const ad = Math.abs(d);
+        it.style.opacity = (1 - Math.min(ad, 110) / 140).toFixed(2);
+        it.style.filter = `blur(${Math.max(0, ad - 25) / 30}px)`;
+        if (ad < bestD) { bestD = ad; best = i; }
+      });
+      if (best !== front) { front = best; nameEl.textContent = items[best].dataset.name; priceEl.textContent = items[best].dataset.price; }
+      raf = Math.abs(target() - cur) > 0.05 ? requestAnimationFrame(render) : null;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(render); };
+    addEventListener('scroll', kick, { passive: true });
+    stage.addEventListener('pointerdown', e => { startX = e.clientX; base = drag; stage.classList.add('is-drag'); });
+    addEventListener('pointermove', e => { if (startX === null) return; drag = base + (e.clientX - startX) * 0.35; kick(); });
+    addEventListener('pointerup', e => { if (startX !== null && Math.abs(e.clientX - startX) > 6) { const block = ev => { ev.preventDefault(); ev.stopPropagation(); stage.removeEventListener('click', block, true); }; stage.addEventListener('click', block, true); } startX = null; stage.classList.remove('is-drag'); });
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) drag = 0;
+    render();
+  }
+
   // Montres qui défilent (section Vendre)
   const spin = $('[data-spin]');
   if (spin) {

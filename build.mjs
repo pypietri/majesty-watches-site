@@ -89,7 +89,7 @@ const marques = [...new Set(montres.map(m => m.marque))].sort((a, b) => (a === '
 // ---------- Images ----------
 const imgMap = new Map(); // src -> { w: {480: url, ...}, ratio }
 const SIZES = [480, 900, 1600];
-async function processImage(src) {
+async function processImage(src, sizes = SIZES) {
   if (imgMap.has(src)) return imgMap.get(src);
   const file = path.join(ROOT, 'public', src);
   if (!fs.existsSync(file)) { imgMap.set(src, null); return null; }
@@ -99,7 +99,7 @@ async function processImage(src) {
   const meta = await sharp(buf).metadata();
   const out = { srcset: [], ratio: (meta.height && meta.width) ? meta.height / meta.width : 1, url: {} };
   fs.mkdirSync(path.join(DIST, 'img'), { recursive: true });
-  for (const w of SIZES) {
+  for (const w of sizes) {
     const name = `${base}-${hash}-${w}.webp`;
     const cached = path.join(CACHE, name);
     if (!fs.existsSync(cached)) {
@@ -115,7 +115,7 @@ async function processImage(src) {
 function img(src, { sizes = '100vw', alt = '', cls = '', eager = false, w = 900 } = {}) {
   const o = imgMap.get(src);
   if (!o) return `<div class="img-missing ${cls}" aria-hidden="true"></div>`;
-  return `<img class="${cls}" src="${o.url[w] || o.url[900]}" srcset="${o.srcset.join(', ')}" sizes="${sizes}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+  return `<img class="${cls}" src="${o.url[w] || o.url[900] || Object.values(o.url).pop()}" srcset="${o.srcset.join(', ')}" sizes="${sizes}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 }
 
 // ---------- Gabarits ----------
@@ -253,12 +253,33 @@ function writePage(urlPath, html) {
 
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
+function ringSection() {
+  const items = montres.filter(m => m.photos[0] && imgMap.get(m.photos[0]) && m.statut !== 'Vendue').slice(0, 12);
+  return `<section class="ring" data-ring aria-label="La collection en 3D">
+  <div class="ring-sticky">
+    <div class="ring-hd wrap">
+      <p class="eyebrow">La collection</p>
+      <h2 class="h2">Chaque pièce,<br>sous tous les angles</h2>
+    </div>
+    <div class="ring-stage" data-ring-stage>
+      <div class="ring-track" data-ring-track style="--n:${items.length}">
+        ${items.map((m, i) => `<a class="ring-it" href="/montres/${m.slug}/" style="--i:${i}" data-name="${esc(m.marque + ' ' + m.court)}" data-price="${esc(priceLabel(m))}"><img src="${imgMap.get(m.photos[0]).url[480]}" alt="${esc(m.nom)}" loading="lazy" draggable="false"></a>`).join('')}
+      </div>
+      <div class="ring-floor" aria-hidden="true"></div>
+    </div>
+    <div class="ring-info wrap">
+      <div class="ring-now"><span data-ring-name>${esc(items[0] ? items[0].marque + ' ' + items[0].court : '')}</span><strong data-ring-price>${esc(items[0] ? priceLabel(items[0]) : '')}</strong></div>
+      <span class="ring-hint">Faites défiler ou glissez pour tourner</span>
+    </div>
+  </div>
+</section>`;
+}
+
 function pageHome() {
   const A = site.accueil;
   const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue').slice(0, 8);
   const list = nouveaux.length >= 4 ? nouveaux : montres.slice(0, 8);
   const dispo = montres.filter(m => m.statut !== 'Vendue').length;
-  const tick = [...marques, ...marques, ...marques, ...marques].map(b => `<a href="/montres/?marque=${encodeURIComponent(b)}">${esc(b)}</a>`).join('');
   const tournantes = (A.montres_tournantes || []).filter(Boolean);
   const avis = site.temoignages || [];
   const body = `
@@ -279,7 +300,7 @@ function pageHome() {
   <div class="hero-foot"><div class="wrap"><span>${dispo} pièces disponibles</span><span class="hero-scroll"><i></i>Défiler</span></div></div>
 </section>
 
-<section class="ticker" aria-label="Les maisons"><div class="ticker-track">${tick}</div></section>
+${ringSection()}
 
 <section class="trust">
   <div class="wrap trust-grid">
@@ -294,6 +315,19 @@ function pageHome() {
       <a class="link" href="/montres/">Voir toute la collection ${icon.arrow}</a>
     </div>
     <div class="grid">${list.map(m => card(m)).join('')}</div>
+  </div>
+</section>
+
+<section class="maisons">
+  <div class="wrap">
+    <div class="sec-hd"><div><p class="eyebrow">Les maisons</p><h2 class="h2">Nos manufactures</h2></div><a class="link" href="/montres/">Toute la collection ${icon.arrow}</a></div>
+    <div class="maisons-grid">
+      ${marques.map(b => { const ms = montres.filter(m => m.marque === b); const ph = ms.find(m => m.photos[0])?.photos[0]; return `<a class="maison" href="/montres/?marque=${encodeURIComponent(b)}" data-reveal>
+        <span class="maison-n">${esc(b)}</span>
+        <span class="maison-c">${ms.length} pièce${ms.length > 1 ? 's' : ''} ${icon.arrow}</span>
+        ${ph ? img(ph, { sizes: '30vw', alt: '', cls: 'maison-img', w: 480 }) : ''}
+      </a>`; }).join('')}
+    </div>
   </div>
 </section>
 
@@ -567,6 +601,7 @@ const t0 = Date.now();
 const toProcess = new Set([site.accueil.image, ...(site.accueil.montres_tournantes || []), ...montres.flatMap(m => m.photos)]);
 let done = 0;
 const queue = [...toProcess].filter(Boolean);
+await processImage(site.accueil.image, [1280, 1920, 2560, 3200]);
 await Promise.all(Array.from({ length: 4 }, async () => {
   while (queue.length) { const s = queue.shift(); try { await processImage(s); } catch (e) { console.warn('Image ignorée', s, e.message); imgMap.set(s, null); } done++; }
 }));
