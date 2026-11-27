@@ -11,11 +11,17 @@ list.push(
   { url: F + '9jiyNlXHUwSFhdrVrNjwTxjM.png', path: 'public/assets/logo-full.png', raw: true },
   { url: F + 'DV6Op5MDCYm4lbGjUe5dVAtJsuQ.png', path: 'public/assets/favicon.png', raw: true },
   { url: F + 'NjgmelJMfVDAeniNtqc6mDG9FgY.png', path: 'public/assets/favicon-dark.png', raw: true },
-  { url: F + 'X5TkFnXC7UXphaQGjUidIeZhqtU.png', path: 'public/assets/og-source.png', raw: true },
+  { url: 'https://framerusercontent.com/assets/MLWPbW1dUQawJLhhun3dBwpgJak.mp4', path: 'public/assets/ocean.mp4', raw: true },
+  { url: F + '6Apd99EHFmavzQNdAd00wqCHP9o.png', path: 'public/images/site/tourne-1.png' },
+  { url: F + 'bI1mMWFoNUVHE6mSb82Yy0s15I.png', path: 'public/images/site/tourne-2.png' },
+  { url: F + 'djAdansFsDUWzytnuEGzp7O4Y.png', path: 'public/images/site/tourne-3.png' },
+  { url: F + 'kLm6rE1YV276a4X5Zhlbhi27M.png', path: 'public/images/site/tourne-4.png' },
+  { url: F + 'yuY7sdNJW2LeJxOTOD7wCy0QgUg.png', path: 'public/images/site/tourne-5.png' },
 );
+for (const it of list) if (/og-source|favicon/.test(it.path)) it.skip = true;
 let ok = 0, fail = 0;
 for (const it of list) {
-  if (fs.existsSync(it.path)) { ok++; continue; }
+  if (it.skip || fs.existsSync(it.path)) { ok++; continue; }
   try {
     const res = await fetch(it.url);
     if (!res.ok) throw new Error(res.status);
