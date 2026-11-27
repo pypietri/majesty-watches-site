@@ -124,7 +124,7 @@ h1, h2, h3, p { margin: 0; }
 .ring-hd { width: 100%; text-align: center; }
 .ring-hd .eyebrow { justify-content: center; }
 .ring-hd .eyebrow::after { content: ""; width: 28px; height: 1px; background: currentColor; }
-.ring-stage { position: relative; height: clamp(360px, 46vw, 600px); perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
+.ring-stage { position: relative; height: clamp(340px, 40vw, 540px); perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
 .ring-stage.is-drag { cursor: grabbing; }
 .ring-track { --r: 640px; --s: 340px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
 .ring-it { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .3s, filter .3s; }
@@ -368,9 +368,9 @@ a.g-score:hover { border-color: var(--navy); }
   .home .hd { position: sticky; }
   .home .hd:not(.is-scrolled):not(.is-open) { background: rgba(255, 255, 255, .95); }
   .hero { min-height: calc(100svh - var(--hd)); align-items: flex-end; background: #fff; }
-  .hero-bg { bottom: 30%; }
-  .hero-bg img { object-position: 81% 42%; }
-  .hero::after { background: linear-gradient(180deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .92) 62%, #fff 72%); }
+  .hero-bg { bottom: 36%; }
+  .hero-bg img { object-position: 81% 46%; }
+  .hero::after { background: linear-gradient(180deg, rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, .94) 56%, #fff 64%); }
   .hero > .wrap { padding-top: 0; padding-bottom: 26px; }
   .hero .eyebrow { font-size: 9.5px; letter-spacing: .2em; }
   .hero .display { font-size: clamp(32px, 9.6vw, 46px); line-height: 1; margin-top: 12px; }
