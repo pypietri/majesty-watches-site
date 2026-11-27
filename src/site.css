@@ -67,7 +67,7 @@ h1, h2, h3, p { margin: 0; }
 .hd.is-hidden { transform: translateY(-100%); }
 .hd-in { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); height: var(--hd); display: flex; align-items: center; gap: 32px; }
 .logo { display: inline-flex; align-items: center; gap: 12px; }
-.logo img { width: 34px; height: 34px; object-fit: contain; }
+.logo img { width: auto; height: 32px; }
 .logo-word { display: flex; flex-direction: column; font: 600 15px/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--navy); }
 .logo-word small { font-size: 8.5px; letter-spacing: .5em; font-weight: 500; margin-top: 5px; color: var(--muted); }
 .hd-nav { margin-left: auto; display: flex; gap: 34px; }

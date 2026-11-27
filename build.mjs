@@ -129,7 +129,7 @@ const icon = {
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.3" d="m5 12.5 4.2 4L19 7"/></svg>',
 };
 
-const logo = `<span class="logo"><img src="/assets/logo-mark.png" alt="" width="34" height="34"><span class="logo-word">Majesty<small>Watches</small></span></span>`;
+const logo = `<span class="logo"><img src="/assets/logo-mark.png" alt="" width="36" height="32"><span class="logo-word">Majesty<small>Watches</small></span></span>`;
 
 function layout({ title, description, canonical, body, ogImage, jsonld, bodyClass = '' }) {
   const fullTitle = title ? `${title} — Majesty Watches` : 'Majesty Watches — Montres de prestige, achat, vente & recherche';
