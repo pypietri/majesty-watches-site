@@ -1,0 +1,569 @@
+// Générateur du site Majesty Watches.
+// Lit content/ (édité via Pages CMS) et produit dist/ (servi par Cloudflare Pages).
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import yaml from 'js-yaml';
+import { marked } from 'marked';
+import sharp from 'sharp';
+
+const ROOT = path.dirname(new URL(import.meta.url).pathname);
+const DIST = path.join(ROOT, 'dist');
+const SITE_URL = 'https://www.majestywatches.fr';
+const CACHE = path.join(ROOT, '.cache/img');
+
+fs.rmSync(DIST, { recursive: true, force: true });
+fs.mkdirSync(DIST, { recursive: true });
+fs.mkdirSync(CACHE, { recursive: true });
+
+// ---------- Contenu ----------
+const site = yaml.load(fs.readFileSync(path.join(ROOT, 'content/site.yml'), 'utf8'));
+const C = site.contact || {};
+const phoneDigits = (C.telephone || '').replace(/[^\d+]/g, '');
+const waNumber = phoneDigits.replace(/^\+/, '').replace(/^0/, '33');
+const wa = (msg) => `https://wa.me/${waNumber}${msg ? '?text=' + encodeURIComponent(msg) : ''}`;
+
+const slugify = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const priceNum = (p = '') => { const n = parseInt(String(p).replace(/[^\d]/g, ''), 10); return Number.isFinite(n) ? n : null; };
+
+function readMontres() {
+  const dir = path.join(ROOT, 'content/montres');
+  return fs.readdirSync(dir).filter(f => f.endsWith('.md')).map(f => {
+    const raw = fs.readFileSync(path.join(dir, f), 'utf8');
+    const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    const fm = m ? (yaml.load(m[1]) || {}) : {};
+    const body = m ? m[2] : raw;
+    const slug = f.replace(/\.md$/, '');
+    const titre = String(fm.titre || slug);
+    const discontinued = /\[discontinued\]/i.test(titre);
+    const nom = titre.replace(/\s*\[discontinued\]\s*/i, ' ').replace(/\s+/g, ' ').trim();
+    const marque = fm.marque && fm.marque !== 'Autre' ? fm.marque : (nom.split(' - ')[0].split(' ').slice(0, 1).join(' '));
+    const modele = nom.startsWith(marque) ? nom.slice(marque.length).trim() : nom;
+    // Détails : on transforme « Clé : valeur » en lignes de fiche technique.
+    const specs = []; const notes = [];
+    let seenList = false;
+    for (const line of body.split('\n')) {
+      const isItem = /^\s*[-*]\s+/.test(line);
+      const l = line.replace(/^\s*[-*]\s+/, '').replace(/\*\*/g, '').trim();
+      if (!l) continue;
+      if (!isItem) { if (seenList && !/^#/.test(l)) notes.push(l); continue; } // la 1re ligne (titre) est ignorée
+      seenList = true;
+      const kv = l.match(/^([^:]{2,30}?)\s*:\s+(.+)$/);
+      if (kv) specs.push([kv[1].trim().replace(/^Condition$/i, 'État').replace(/^Etat$/i, 'État'), kv[2].trim()]);
+      else specs.push(['', l]);
+    }
+    return {
+      slug, titre, nom, marque, modele, discontinued,
+      reference: String(fm.reference || '').trim(),
+      prix: String(fm.prix || '').trim(),
+      prixNum: priceNum(fm.prix),
+      statut: fm.statut || 'Disponible',
+      nouveaute: !!fm.nouveaute,
+      publie: fm.publie !== false,
+      date: String(fm.date || '2000-01-01'),
+      photos: (fm.photos || []).filter(Boolean),
+      specs, notes, bodyHtml: marked.parse(body || ''),
+    };
+  });
+}
+
+const all = readMontres();
+const montres = all.filter(m => m.publie && m.statut !== 'Masquée')
+  .sort((a, b) => (b.date.localeCompare(a.date)) || a.titre.localeCompare(b.titre));
+const marques = [...new Set(montres.map(m => m.marque))].sort((a, b) => (a === 'Rolex' ? -1 : b === 'Rolex' ? 1 : a.localeCompare(b)));
+
+// ---------- Images ----------
+const imgMap = new Map(); // src -> { w: {480: url, ...}, ratio }
+const SIZES = [480, 900, 1600];
+async function processImage(src) {
+  if (imgMap.has(src)) return imgMap.get(src);
+  const file = path.join(ROOT, 'public', src);
+  if (!fs.existsSync(file)) { imgMap.set(src, null); return null; }
+  const buf = fs.readFileSync(file);
+  const hash = crypto.createHash('md5').update(buf).digest('hex').slice(0, 10);
+  const base = slugify(path.basename(src, path.extname(src))).slice(0, 60);
+  const meta = await sharp(buf).metadata();
+  const out = { srcset: [], ratio: (meta.height && meta.width) ? meta.height / meta.width : 1, url: {} };
+  fs.mkdirSync(path.join(DIST, 'img'), { recursive: true });
+  for (const w of SIZES) {
+    const name = `${base}-${hash}-${w}.webp`;
+    const cached = path.join(CACHE, name);
+    if (!fs.existsSync(cached)) {
+      await sharp(buf).rotate().resize({ width: Math.min(w, meta.width || w), withoutEnlargement: true }).webp({ quality: 78 }).toFile(cached);
+    }
+    fs.copyFileSync(cached, path.join(DIST, 'img', name));
+    out.url[w] = `/img/${name}`;
+    out.srcset.push(`/img/${name} ${w}w`);
+  }
+  imgMap.set(src, out);
+  return out;
+}
+function img(src, { sizes = '100vw', alt = '', cls = '', eager = false, w = 900 } = {}) {
+  const o = imgMap.get(src);
+  if (!o) return `<div class="img-missing ${cls}" aria-hidden="true"></div>`;
+  return `<img class="${cls}" src="${o.url[w] || o.url[900]}" srcset="${o.srcset.join(', ')}" sizes="${sizes}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+}
+
+// ---------- Gabarits ----------
+const nav = [
+  ['/montres/', 'Collection'],
+  ['/vendre/', 'Vendre'],
+  ['/recherche/', 'Recherche'],
+  ['/contact/', 'Contact'],
+];
+const icon = {
+  wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm5.79 14.04c-.24.68-1.42 1.3-1.95 1.35-.5.05-.97.23-3.28-.68-2.78-1.1-4.55-3.94-4.69-4.12-.14-.18-1.12-1.49-1.12-2.85 0-1.35.71-2.02.96-2.29.25-.27.55-.34.73-.34h.52c.17 0 .39-.06.61.47.24.55.78 1.9.85 2.04.07.14.11.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.71 1.17 1.52 1.9 1.05.93 1.93 1.22 2.2 1.36.27.14.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.23.61-.14.25.09 1.59.75 1.86.89.27.14.45.2.52.32.07.11.07.66-.17 1.34Z"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M5 3.5h3l1.5 4-2 1.2a11 11 0 0 0 7.8 7.8l1.2-2 4 1.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 3 5.7 2 2 0 0 1 5 3.5Z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M3.5 5.5h17v13h-17zM3.8 6l8.2 7 8.2-7"/></svg>',
+  ig: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M4 12h15m-5-5 5 5-5 5"/></svg>',
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.4"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.3" d="m5 12.5 4.2 4L19 7"/></svg>',
+};
+
+const logo = `<span class="logo"><img src="/assets/logo-mark.png" alt="" width="34" height="34"><span class="logo-word">Majesty<small>Watches</small></span></span>`;
+
+function layout({ title, description, canonical, body, ogImage, jsonld, bodyClass = '' }) {
+  const fullTitle = title ? `${title} — Majesty Watches` : 'Majesty Watches — Montres de prestige, achat, vente & recherche';
+  const og = ogImage ? SITE_URL + ogImage : SITE_URL + '/assets/og.jpg';
+  return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(fullTitle)}</title>
+<meta name="description" content="${esc(description || site.accueil.texte)}">
+<link rel="canonical" href="${SITE_URL}${canonical}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(fullTitle)}">
+<meta property="og:description" content="${esc(description || site.accueil.texte)}">
+<meta property="og:image" content="${og}">
+<meta property="og:url" content="${SITE_URL}${canonical}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F4F1EB">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=${BUILD}">
+${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
+</head>
+<body class="${bodyClass}">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="hd" data-hd>
+  <div class="hd-in">
+    <a href="/" class="hd-logo" aria-label="Majesty Watches — accueil">${logo}</a>
+    <nav class="hd-nav" aria-label="Navigation principale">
+      ${nav.map(([h, l]) => `<a href="${h}"${canonical.startsWith(h) ? ' aria-current="page"' : ''}>${l}</a>`).join('')}
+    </nav>
+    <a class="hd-cta" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">${icon.wa}<span>WhatsApp</span></a>
+    <button class="hd-burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
+  </div>
+  <div class="hd-drawer" data-drawer>
+    ${nav.map(([h, l]) => `<a href="${h}">${l}</a>`).join('')}
+    <a href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</header>
+<main id="contenu">
+${body}
+</main>
+<footer class="ft">
+  <div class="wrap ft-grid">
+    <div class="ft-brand">
+      <a href="/" aria-label="Majesty Watches">${logo}</a>
+      <p>Achat, vente et recherche de montres de prestige. Des pièces authentiques, choisies avec exigence.</p>
+    </div>
+    <div>
+      <h3>Nous contacter</h3>
+      <ul>
+        <li><a href="${wa()}" target="_blank" rel="noopener">WhatsApp · ${esc(C.telephone)}</a></li>
+        <li><a href="tel:${phoneDigits}">${esc(C.telephone)}</a></li>
+        <li><a href="mailto:${esc(C.email)}">${esc(C.email)}</a></li>
+        <li><a href="https://www.instagram.com/${esc(C.instagram)}/" target="_blank" rel="noopener">Instagram · @${esc(C.instagram)}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Maison</h3>
+      <ul>
+        <li><a href="/montres/">La collection</a></li>
+        <li><a href="/vendre/">Vendre sa montre</a></li>
+        <li><a href="/recherche/">Recherche personnalisée</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap ft-bottom">
+    <span>© ${new Date().getFullYear()} Majesty Watches</span>
+    <span><a href="/mentions-legales/">Mentions légales</a> · <a href="/confidentialite/">Confidentialité</a></span>
+    <span>Site par <a href="https://www.pierreyvespietri.com" target="_blank" rel="noopener">Pierre-Yves Pietri</a></span>
+  </div>
+</footer>
+<a class="wa-float" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">${icon.wa}</a>
+<script src="/assets/site.js?v=${BUILD}" defer></script>
+</body>
+</html>`;
+}
+
+const BUILD = Date.now().toString(36);
+
+function badge(m) {
+  if (m.statut === 'Réservée') return '<span class="tag tag-res">Réservée</span>';
+  if (m.statut === 'Vendue') return '<span class="tag tag-sold">Vendue</span>';
+  if (m.statut === 'En arrivage') return '<span class="tag">En arrivage</span>';
+  if (m.nouveaute) return '<span class="tag tag-new">Nouveauté</span>';
+  return '';
+}
+function priceLabel(m) {
+  if (m.statut === 'Vendue') return 'Vendue';
+  if (m.statut === 'En arrivage' && !m.prixNum) return 'Prix sur demande';
+  return m.prix || 'Prix sur demande';
+}
+function card(m, { eager = false } = {}) {
+  const [a, b] = m.photos;
+  return `<article class="card" data-reveal data-marque="${esc(m.marque)}" data-prix="${m.prixNum ?? ''}" data-date="${m.date}" data-q="${esc((m.nom + ' ' + m.reference).toLowerCase())}">
+  <a href="/montres/${m.slug}/" class="card-a">
+    <div class="card-img">
+      ${img(a, { sizes: '(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 46vw', alt: m.nom, cls: 'i1', eager, w: 480 })}
+      ${b ? img(b, { sizes: '(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 46vw', alt: '', cls: 'i2', w: 480 }) : ''}
+      ${badge(m)}
+    </div>
+    <div class="card-tx">
+      <span class="card-brand">${esc(m.marque)}</span>
+      <h3 class="card-name">${esc(m.modele || m.nom)}</h3>
+      <div class="card-meta"><span>${m.reference ? 'Réf. ' + esc(m.reference) : ''}</span><span class="card-price">${esc(priceLabel(m))}</span></div>
+    </div>
+  </a>
+</article>`;
+}
+
+// ---------- Pages ----------
+function writePage(urlPath, html) {
+  const dir = path.join(DIST, urlPath);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+}
+
+function pageHome() {
+  const A = site.accueil;
+  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue').slice(0, 8);
+  const list = nouveaux.length >= 4 ? nouveaux : montres.slice(0, 8);
+  const body = `
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-tx">
+      <p class="eyebrow" data-reveal>${esc(A.surtitre)}</p>
+      <h1 class="display" data-reveal>${esc(A.titre)}</h1>
+      <p class="lead" data-reveal>${esc(A.texte)}</p>
+      <div class="btns" data-reveal>
+        <a class="btn" href="/montres/">Découvrir la collection ${icon.arrow}</a>
+        <a class="btn btn-ghost" href="/vendre/">Vendre ma montre</a>
+      </div>
+    </div>
+    <div class="hero-media" data-reveal>
+      ${img(A.image, { sizes: '(min-width: 900px) 46vw, 100vw', alt: 'Montre de prestige Majesty Watches', eager: true, w: 1600 })}
+      <span class="hero-count"><strong>${montres.filter(m => m.statut !== 'Vendue').length}</strong> pièces disponibles</span>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap trust-grid">
+    ${(site.engagements || []).map((e, i) => `<div class="trust-it" data-reveal><span class="trust-n">0${i + 1}</span><h3>${esc(e.titre)}</h3><p>${esc(e.texte)}</p></div>`).join('')}
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div><p class="eyebrow">Arrivages récents</p><h2 class="h2">Nouveautés</h2></div>
+      <a class="link" href="/montres/">Toute la collection ${icon.arrow}</a>
+    </div>
+    <div class="grid">${list.map((m, i) => card(m, { eager: false })).join('')}</div>
+  </div>
+</section>
+
+<section class="brands">
+  <div class="wrap">
+    <p class="eyebrow">Les maisons</p>
+    <ul class="brands-list">${marques.map(b => `<li><a href="/montres/?marque=${encodeURIComponent(b)}">${esc(b)}</a></li>`).join('')}</ul>
+  </div>
+</section>
+
+<section class="duo">
+  <div class="wrap duo-grid">
+    <a class="duo-it" href="/vendre/" data-reveal>
+      <p class="eyebrow">Vendre</p>
+      <h2 class="h2">${esc(site.vendre.titre)}</h2>
+      <p>${esc(site.vendre.intro)}</p>
+      <span class="link">Faire estimer ma montre ${icon.arrow}</span>
+    </a>
+    <a class="duo-it" href="/recherche/" data-reveal>
+      <p class="eyebrow">Rechercher</p>
+      <h2 class="h2">${esc(site.recherche.titre)}</h2>
+      <p>${esc(site.recherche.intro)} ${esc(site.recherche.texte)}</p>
+      <span class="link">Lancer une recherche ${icon.arrow}</span>
+    </a>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap-narrow">
+    <blockquote data-reveal>
+      <p>${esc(A.citation)}</p>
+      <footer>${esc(A.citation_auteur)}</footer>
+    </blockquote>
+  </div>
+</section>
+
+<section class="sec reviews">
+  <div class="wrap">
+    <div class="sec-hd"><div><p class="eyebrow">Ils nous ont fait confiance</p><h2 class="h2">Nos clients</h2></div></div>
+    <div class="reviews-grid">
+      ${(site.temoignages || []).map(t => `<figure class="review" data-reveal><span class="review-q" aria-hidden="true">“</span><blockquote>${esc(t.texte)}</blockquote><figcaption>${esc(t.nom)}</figcaption></figure>`).join('')}
+    </div>
+  </div>
+</section>
+
+${ctaBand()}`;
+  writePage('/', layout({ title: '', canonical: '/', body, bodyClass: 'home', jsonld: {
+    '@context': 'https://schema.org', '@type': 'Store', name: 'Majesty Watches', url: SITE_URL, email: C.email, telephone: C.telephone,
+    sameAs: [`https://www.instagram.com/${C.instagram}/`], image: SITE_URL + '/assets/og.jpg', description: site.accueil.texte,
+  } }));
+}
+
+function ctaBand() {
+  return `<section class="cta">
+  <div class="wrap cta-in">
+    <div>
+      <p class="eyebrow">Une question sur une pièce ?</p>
+      <h2 class="h2">Parlons-en directement.</h2>
+    </div>
+    <div class="cta-btns">
+      <a class="btn btn-light" href="${wa('Bonjour Majesty Watches, ')}" target="_blank" rel="noopener">${icon.wa} WhatsApp</a>
+      <a class="btn btn-line" href="tel:${phoneDigits}">${icon.phone} ${esc(C.telephone)}</a>
+      <a class="btn btn-line" href="mailto:${esc(C.email)}">${icon.mail} E-mail</a>
+    </div>
+  </div>
+</section>`;
+}
+
+function pageCollection() {
+  const body = `
+<section class="page-hd">
+  <div class="wrap">
+    <p class="eyebrow">La collection</p>
+    <h1 class="display-s">Toutes nos montres</h1>
+    <p class="lead">${montres.length} pièces sélectionnées une à une. Chaque montre est contrôlée et décrite avec précision&nbsp;— n’hésitez pas à nous écrire pour toute question.</p>
+  </div>
+</section>
+<section class="sec sec-tight">
+  <div class="wrap">
+    <div class="tools" data-tools>
+      <div class="chips" role="group" aria-label="Filtrer par maison">
+        <button class="chip" aria-pressed="true" data-marque="">Toutes</button>
+        ${marques.map(b => `<button class="chip" aria-pressed="false" data-marque="${esc(b)}">${esc(b)}</button>`).join('')}
+      </div>
+      <div class="tools-r">
+        <label class="search">${icon.search}<input type="search" placeholder="Rechercher un modèle, une référence…" data-search aria-label="Rechercher"></label>
+        <label class="sort"><span class="sr">Trier</span>
+          <select data-sort>
+            <option value="date">Arrivages récents</option>
+            <option value="asc">Prix croissant</option>
+            <option value="desc">Prix décroissant</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <p class="count" data-count aria-live="polite">${montres.length} montres</p>
+    <div class="grid" data-grid>${montres.map((m, i) => card(m, { eager: i < 4 })).join('')}</div>
+    <div class="empty" data-empty hidden>
+      <p>Aucune montre ne correspond à votre recherche.</p>
+      <a class="link" href="/recherche/">Demander une recherche personnalisée ${icon.arrow}</a>
+    </div>
+  </div>
+</section>
+${ctaBand()}`;
+  writePage('/montres/', layout({ title: 'La collection', description: `Découvrez nos ${montres.length} montres de prestige : Rolex, Audemars Piguet, Patek Philippe, Cartier…`, canonical: '/montres/', body }));
+}
+
+function pageMontre(m) {
+  const msg = `Bonjour Majesty Watches, je suis intéressé(e) par la ${m.nom}${m.reference ? ' (réf. ' + m.reference + ')' : ''}.`;
+  const autres = montres.filter(x => x.slug !== m.slug && x.statut !== 'Vendue');
+  const similaires = [...autres.filter(x => x.marque === m.marque), ...autres.filter(x => x.marque !== m.marque)].slice(0, 4);
+  const photos = m.photos.filter(p => imgMap.get(p));
+  const body = `
+<nav class="crumbs wrap" aria-label="Fil d’Ariane"><a href="/montres/">Collection</a><span>/</span><a href="/montres/?marque=${encodeURIComponent(m.marque)}">${esc(m.marque)}</a><span>/</span><span aria-current="page">${esc(m.modele || m.nom)}</span></nav>
+<section class="pdp">
+  <div class="wrap pdp-grid">
+    <div class="gal" data-gal>
+      <div class="gal-main" data-gal-track>
+        ${photos.map((p, i) => `<button class="gal-slide" data-zoom="${imgMap.get(p).url[1600]}" aria-label="Agrandir la photo ${i + 1}">${img(p, { sizes: '(min-width: 1000px) 55vw, 100vw', alt: `${m.nom} — photo ${i + 1}`, eager: i === 0, w: 900 })}</button>`).join('') || '<div class="img-missing"></div>'}
+      </div>
+      ${photos.length > 1 ? `<div class="gal-thumbs">${photos.map((p, i) => `<button class="gal-th" data-go="${i}" aria-label="Photo ${i + 1}"${i === 0 ? ' aria-current="true"' : ''}>${img(p, { sizes: '96px', alt: '', w: 480 })}</button>`).join('')}</div>` : ''}
+    </div>
+    <div class="pdp-info">
+      <div class="pdp-sticky">
+        <p class="eyebrow">${esc(m.marque)}${m.discontinued ? ' · Production arrêtée' : ''}</p>
+        <h1 class="pdp-title">${esc(m.modele || m.nom)}</h1>
+        ${m.reference ? `<p class="pdp-ref">Réf. ${esc(m.reference)}</p>` : ''}
+        <div class="pdp-price"><span>${esc(priceLabel(m))}</span>${m.statut !== 'Disponible' ? `<em class="pdp-status">${esc(m.statut)}</em>` : ''}</div>
+        <div class="pdp-btns">
+          <a class="btn btn-block" href="${wa(msg)}" target="_blank" rel="noopener">${icon.wa} ${m.statut === 'Disponible' ? 'Réserver / poser une question' : 'Nous écrire sur WhatsApp'}</a>
+          <div class="pdp-alt">
+            <a class="btn btn-ghost" href="tel:${phoneDigits}">${icon.phone} Appeler</a>
+            <a class="btn btn-ghost" href="mailto:${esc(C.email)}?subject=${encodeURIComponent(m.nom)}&body=${encodeURIComponent(msg)}">${icon.mail} E-mail</a>
+          </div>
+        </div>
+        ${m.specs.length ? `<dl class="specs">${m.specs.map(([k, v]) => k ? `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>` : `<div class="specs-full"><dd>${icon.check} ${esc(v)}</dd></div>`).join('')}</dl>` : m.bodyHtml}
+        ${m.notes.length ? `<div class="pdp-notes">${m.notes.map(n => `<p>${esc(n.replace(/\*\*/g, ''))}</p>`).join('')}</div>` : ''}
+        <ul class="pdp-trust">
+          <li>${icon.check} Authenticité contrôlée</li>
+          <li>${icon.check} Envoi sécurisé et assuré</li>
+          <li>${icon.check} Paiement sécurisé</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+${similaires.length ? `<section class="sec">
+  <div class="wrap">
+    <div class="sec-hd"><div><p class="eyebrow">À découvrir aussi</p><h2 class="h2">Dans la collection</h2></div><a class="link" href="/montres/">Toute la collection ${icon.arrow}</a></div>
+    <div class="grid">${similaires.map(x => card(x)).join('')}</div>
+  </div>
+</section>` : ''}
+<div class="lb" data-lb hidden><button class="lb-x" aria-label="Fermer" data-lb-x>×</button><img alt=""></div>`;
+  const jsonld = {
+    '@context': 'https://schema.org', '@type': 'Product', name: m.nom, brand: { '@type': 'Brand', name: m.marque }, sku: m.reference || undefined,
+    image: photos.slice(0, 3).map(p => SITE_URL + imgMap.get(p).url[1600]),
+    offers: m.prixNum ? { '@type': 'Offer', priceCurrency: 'EUR', price: m.prixNum, itemCondition: 'https://schema.org/UsedCondition',
+      availability: m.statut === 'Disponible' ? 'https://schema.org/InStock' : m.statut === 'Vendue' ? 'https://schema.org/SoldOut' : 'https://schema.org/PreOrder',
+      url: `${SITE_URL}/montres/${m.slug}/` } : undefined,
+  };
+  const desc = `${m.nom}${m.reference ? ', réf. ' + m.reference : ''} — ${priceLabel(m)}. ${m.specs.filter(s => s[0]).slice(0, 3).map(s => s.join(' : ')).join(' · ')}`;
+  writePage(`/montres/${m.slug}/`, layout({ title: m.nom, description: desc, canonical: `/montres/${m.slug}/`, body, jsonld, ogImage: photos[0] ? imgMap.get(photos[0]).url[900] : null, bodyClass: 'pdp-page' }));
+}
+
+function pageText(urlPath, { eyebrow, title, html, description, aside = '' }) {
+  const body = `
+<section class="page-hd">
+  <div class="wrap"><p class="eyebrow">${esc(eyebrow)}</p><h1 class="display-s">${esc(title)}</h1></div>
+</section>
+<section class="sec sec-tight">
+  <div class="wrap text-grid">
+    <div class="prose">${html}</div>
+    ${aside}
+  </div>
+</section>
+${ctaBand()}`;
+  writePage(urlPath, layout({ title, description, canonical: urlPath, body }));
+}
+
+function contactAside(msg) {
+  return `<aside class="contact-card">
+  <p class="eyebrow">Nous contacter</p>
+  <a class="btn btn-block" href="${wa(msg)}" target="_blank" rel="noopener">${icon.wa} WhatsApp</a>
+  <a class="btn btn-ghost btn-block" href="tel:${phoneDigits}">${icon.phone} ${esc(C.telephone)}</a>
+  <a class="btn btn-ghost btn-block" href="mailto:${esc(C.email)}">${icon.mail} ${esc(C.email)}</a>
+  <a class="btn btn-ghost btn-block" href="https://www.instagram.com/${esc(C.instagram)}/" target="_blank" rel="noopener">${icon.ig} @${esc(C.instagram)}</a>
+</aside>`;
+}
+
+function pagesStatic() {
+  const V = site.vendre;
+  pageText('/vendre/', {
+    eyebrow: 'Vendre', title: V.titre, description: V.intro,
+    html: `<p class="lead">${esc(V.intro)}</p><ol class="steps">${(V.liste || []).map(l => `<li>${esc(l)}</li>`).join('')}</ol><p>${esc(V.conclusion)}</p>`,
+    aside: contactAside('Bonjour Majesty Watches, je souhaite faire estimer ma montre : '),
+  });
+  const R = site.recherche;
+  pageText('/recherche/', {
+    eyebrow: 'Recherche personnalisée', title: R.titre, description: R.intro,
+    html: `<p class="lead">${esc(R.intro)}</p><p>${esc(R.texte)}</p>`,
+    aside: contactAside('Bonjour Majesty Watches, je recherche le modèle suivant : '),
+  });
+  // Contact avec formulaire
+  const body = `
+<section class="page-hd"><div class="wrap"><p class="eyebrow">Contact</p><h1 class="display-s">Écrivez-nous</h1><p class="lead">Une question sur une montre, une estimation, une recherche&nbsp;? Nous vous répondons rapidement — le plus simple reste WhatsApp.</p></div></section>
+<section class="sec sec-tight">
+  <div class="wrap text-grid">
+    <form class="form" data-form action="https://formsubmit.co/ajax/${esc(C.email)}" method="post">
+      <input type="hidden" name="_subject" value="Nouveau message — site Majesty Watches">
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+      <div class="form-row">
+        <label><span>Nom</span><input name="nom" required autocomplete="name"></label>
+        <label><span>Téléphone</span><input name="telephone" type="tel" autocomplete="tel"></label>
+      </div>
+      <label><span>E-mail</span><input name="email" type="email" required autocomplete="email"></label>
+      <label><span>Objet</span>
+        <select name="objet"><option>Achat d’une montre</option><option>Vendre ma montre</option><option>Recherche personnalisée</option><option>Autre</option></select>
+      </label>
+      <label><span>Message</span><textarea name="message" rows="6" required></textarea></label>
+      <button class="btn" type="submit">Envoyer le message ${icon.arrow}</button>
+      <p class="form-msg" data-form-msg role="status"></p>
+    </form>
+    ${contactAside('Bonjour Majesty Watches, ')}
+  </div>
+</section>`;
+  writePage('/contact/', layout({ title: 'Contact', description: 'Contactez Majesty Watches par WhatsApp, téléphone, e-mail ou Instagram.', canonical: '/contact/', body }));
+
+  const legal = fs.readFileSync(path.join(ROOT, 'content/mentions-legales.md'), 'utf8');
+  pageText('/mentions-legales/', { eyebrow: 'Informations', title: 'Mentions légales', html: marked.parse(legal) });
+  const conf = fs.readFileSync(path.join(ROOT, 'content/confidentialite.md'), 'utf8');
+  pageText('/confidentialite/', { eyebrow: 'Informations', title: 'Confidentialité', html: marked.parse(conf) });
+
+  // 404
+  fs.writeFileSync(path.join(DIST, '404.html'), layout({ title: 'Page introuvable', canonical: '/404', body: `
+<section class="page-hd"><div class="wrap"><p class="eyebrow">Erreur 404</p><h1 class="display-s">Cette page n’existe pas (ou plus).</h1><p class="lead">La montre que vous cherchez a peut-être trouvé preneur.</p><div class="btns"><a class="btn" href="/montres/">Voir la collection ${icon.arrow}</a><a class="btn btn-ghost" href="/recherche/">Recherche personnalisée</a></div></div></section>` }));
+}
+
+function seoFiles() {
+  const urls = ['/', '/montres/', '/vendre/', '/recherche/', '/contact/', ...montres.map(m => `/montres/${m.slug}/`)];
+  fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `<url><loc>${SITE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+  fs.writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+  // Anciennes URL Framer -> nouvelles
+  const redirects = [
+    '/shop /montres/ 301',
+    '/shop/ /montres/ 301',
+    '/shop/:slug /montres/:slug/ 301',
+    '/montres /montres/ 301',
+    '/collection/minimalist-elegance /vendre/ 301',
+    '/collection/recherche-personnalisee /recherche/ 301',
+    '/collection/* /montres/ 301',
+    '/legal-2 /mentions-legales/ 301',
+    '/contact /contact/ 301',
+  ];
+  fs.writeFileSync(path.join(DIST, '_redirects'), redirects.join('\n') + '\n');
+  fs.writeFileSync(path.join(DIST, '_headers'), `/assets/*\n  Cache-Control: public, max-age=0, must-revalidate\n/assets/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n/img/*\n  Cache-Control: public, max-age=31536000, immutable\n`);
+}
+
+function copyAssets() {
+  const to = path.join(DIST, 'assets');
+  fs.mkdirSync(path.join(to, 'fonts'), { recursive: true });
+  for (const f of ['site.css', 'site.js']) fs.copyFileSync(path.join(ROOT, 'src', f), path.join(to, f));
+  const fsrc = path.join(ROOT, 'node_modules/@fontsource/cormorant-garamond/files');
+  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-500-normal.woff2'), path.join(to, 'fonts/cormorant-500.woff2'));
+  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-500-italic.woff2'), path.join(to, 'fonts/cormorant-500i.woff2'));
+  fs.copyFileSync(path.join(fsrc, 'cormorant-garamond-latin-400-normal.woff2'), path.join(to, 'fonts/cormorant-400.woff2'));
+  fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2'), path.join(to, 'fonts/inter.woff2'));
+  // Fichiers statiques du dossier public (logo, favicon…), hors photos des montres (traitées en webp)
+  const pub = path.join(ROOT, 'public/assets');
+  if (fs.existsSync(pub)) for (const f of fs.readdirSync(pub)) fs.copyFileSync(path.join(pub, f), path.join(to, f));
+}
+
+// ---------- Exécution ----------
+const t0 = Date.now();
+const toProcess = new Set([site.accueil.image, ...montres.flatMap(m => m.photos)]);
+let done = 0;
+const queue = [...toProcess].filter(Boolean);
+await Promise.all(Array.from({ length: 4 }, async () => {
+  while (queue.length) { const s = queue.shift(); try { await processImage(s); } catch (e) { console.warn('Image ignorée', s, e.message); imgMap.set(s, null); } done++; }
+}));
+copyAssets();
+pageHome();
+pageCollection();
+montres.forEach(pageMontre);
+pagesStatic();
+seoFiles();
+const missing = [...imgMap].filter(([, v]) => !v).map(([k]) => k);
+console.log(`OK : ${montres.length} montres publiées / ${all.length}, ${done} images (${missing.length} manquantes) en ${((Date.now() - t0) / 1000).toFixed(1)} s`);

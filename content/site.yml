@@ -1,0 +1,47 @@
+contact:
+  telephone: "+33 6 76 91 12 96"
+  email: contact@majestywatches.fr
+  instagram: majestywatches_
+  ville: France
+
+accueil:
+  surtitre: Achat · Vente · Recherche de montres de prestige
+  titre: Des montres d’exception, choisies une à une.
+  texte: Des pièces uniques, sélectionnées avec soin. Pour le plaisir d’offrir, de collectionner, ou tout simplement de porter une montre qui a du caractère.
+  image: /images/site/hero.jpg
+  citation: Chez Majesty Watches, la confiance est au cœur de chaque échange. Acquérir une montre d’exception est un moment important — notre mission est de le rendre fluide, sécurisé et pleinement satisfaisant.
+  citation_auteur: Mickaël — fondateur de Majesty Watches
+
+engagements:
+  - titre: Montres authentiques
+    texte: Chaque pièce est sélectionnée et contrôlée avec soin.
+  - titre: Achat · Vente · Échange
+    texte: Achetez, vendez ou échangez votre montre en toute simplicité.
+  - titre: Livraison sécurisée
+    texte: Chaque envoi est sécurisé et assuré.
+  - titre: Paiement sécurisé
+    texte: Des solutions de paiement sécurisées.
+
+temoignages:
+  - nom: Antoine
+    texte: Je tiens à exprimer ma grande satisfaction suite à mon expérience avec Mickaël lors de l’achat de ma montre. Dès le début, son professionnalisme et son expertise m’ont impressionné. Il a su répondre à toutes mes interrogations avec clarté et précision, ce qui a été extrêmement rassurant.
+  - nom: Sacha
+    texte: Un professionnel à l’écoute, qui a été le premier à chercher et trouver des solutions selon mes demandes. Il est de bon conseil, et surtout, le plus important, il est honnête. Vraiment très heureux d’avoir pu m’offrir ma première Rolex grâce à cet homme !
+  - nom: Tony
+    texte: Je recommande vivement Majesty Watches ! Mickaël se montre toujours disponible et réactif, et il offre d’excellents conseils. La montre que je souhaitais a été livrée en 15 jours, dans le respect du budget. Un immense merci !
+
+vendre:
+  titre: Vendez votre montre en toute confiance
+  intro: Recevez une estimation juste et précise grâce à l’expertise de notre équipe. Contactez-nous par WhatsApp, téléphone, Instagram ou e-mail en nous transmettant les informations suivantes.
+  liste:
+    - Référence de la montre
+    - Année
+    - État général
+    - Prix souhaité
+    - Photos claires de la montre
+  conclusion: Nous vous remercions pour votre confiance et nous engageons à vous répondre dans les plus brefs délais.
+
+recherche:
+  titre: Recherche personnalisée
+  intro: Vous recherchez un modèle qui n’est pas actuellement en stock ?
+  texte: "Notre équipe met tout en œuvre pour vous le trouver grâce à notre réseau de partenaires de confiance, en France comme à l’international. Envoyez-nous la référence ou le modèle souhaité : nous revenons vers vous rapidement avec une proposition personnalisée."

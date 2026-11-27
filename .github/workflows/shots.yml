@@ -1,0 +1,26 @@
+name: Captures de contrôle
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ['shots/**']
+permissions:
+  contents: write
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install --no-audit --no-fund && npm install --no-save playwright && npx playwright install --with-deps chromium
+      - run: node build.mjs && node tools/shots.mjs
+      - name: Publier sur la branche shots
+        run: |
+          git config user.name "majesty-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan shots-tmp
+          git rm -rf --cached . > /dev/null
+          git add -f shots
+          git commit -m "captures $(date -u +%H%M)" > /dev/null
+          git push -f origin shots-tmp:shots

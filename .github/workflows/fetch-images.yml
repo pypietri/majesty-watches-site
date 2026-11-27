@@ -1,0 +1,23 @@
+name: Récupérer les photos (migration)
+on:
+  workflow_dispatch:
+  push:
+    paths: ['tools/seed/downloads.json', 'tools/fetch-images.mjs']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install --no-audit --no-fund
+      - run: node tools/fetch-images.mjs
+      - name: Commit
+        run: |
+          git config user.name "majesty-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public
+          git diff --cached --quiet || git commit -m "Photos importées depuis Framer"
+          git push
