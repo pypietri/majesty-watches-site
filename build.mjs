@@ -260,6 +260,7 @@ function ringSection() {
     <div class="ring-hd wrap">
       <p class="eyebrow">La collection</p>
       <h2 class="h2">Chaque pièce,<br>sous tous les angles</h2>
+      <span class="ring-hint">Faites défiler ou glissez pour tourner</span>
     </div>
     <div class="ring-stage" data-ring-stage>
       <div class="ring-track" data-ring-track style="--n:${items.length}">
@@ -269,7 +270,6 @@ function ringSection() {
     </div>
     <div class="ring-info wrap">
       <div class="ring-now"><span data-ring-name>${esc(items[0] ? items[0].marque + ' ' + items[0].court : '')}</span><strong data-ring-price>${esc(items[0] ? priceLabel(items[0]) : '')}</strong></div>
-      <span class="ring-hint">Faites défiler ou glissez pour tourner</span>
     </div>
   </div>
 </section>`;

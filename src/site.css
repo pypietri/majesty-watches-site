@@ -119,22 +119,23 @@ h1, h2, h3, p { margin: 0; }
 @keyframes tick { to { transform: translateX(-50%); } }
 
 /* ——— Anneau 3D de la collection ——— */
-.ring { position: relative; height: 320vh; background: linear-gradient(180deg, #fff 0%, #F3F4F5 55%, #fff 100%); }
+.ring { position: relative; height: 320vh; background: #fff; }
 .ring-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: calc(var(--hd) + 24px) 0 36px; }
 .ring-hd { width: 100%; text-align: center; }
 .ring-hd .eyebrow { justify-content: center; }
 .ring-hd .eyebrow::after { content: ""; width: 28px; height: 1px; background: currentColor; }
 .ring-stage { position: relative; perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
 .ring-stage.is-drag { cursor: grabbing; }
-.ring-track { --r: 560px; --s: 300px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
+.ring-track { --r: 640px; --s: 340px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
 .ring-it { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .3s, filter .3s; }
-.ring-it img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; -webkit-box-reflect: below 6px linear-gradient(transparent 62%, rgba(255, 255, 255, .22)); }
+.ring-it img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
 .ring-floor { position: absolute; left: 50%; bottom: 12%; width: 70%; height: 90px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(23, 51, 82, .14), transparent 70%); filter: blur(8px); pointer-events: none; }
-.ring-info { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.ring-info { width: 100%; display: flex; justify-content: center; text-align: center; }
+.ring-now { justify-items: center; }
 .ring-now { display: grid; gap: 8px; }
 .ring-now span { font: 400 14px/1.2 var(--font); letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
 .ring-now strong { font: 200 30px/1 var(--font); color: var(--navy); letter-spacing: .02em; }
-.ring-hint { font: 500 10.5px/1 var(--font); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.ring-hint { display: block; margin-top: 18px; font: 500 10.5px/1 var(--font); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
 
 /* ——— Maisons ——— */
 .maisons { padding: clamp(72px, 9vw, 130px) 0 0; }
@@ -145,7 +146,7 @@ h1, h2, h3, p { margin: 0; }
 .maison:hover::before { transform: none; }
 .maison-n { font: 200 clamp(26px, 2.6vw, 40px)/1.05 var(--font); text-transform: uppercase; letter-spacing: .02em; max-width: 10ch; position: relative; z-index: 1; }
 .maison-c { display: inline-flex; align-items: center; gap: 10px; font: 600 10.5px/1 var(--font); letter-spacing: .22em; text-transform: uppercase; position: relative; z-index: 1; }
-.maison-img { position: absolute; right: -6%; bottom: -10%; width: 52%; height: auto; aspect-ratio: 1; object-fit: contain; mix-blend-mode: multiply; opacity: .9; transform: rotate(-8deg) scale(.95); transition: transform .9s var(--ease), opacity .5s, filter .5s; z-index: 0; }
+.maison-img { position: absolute; right: -4%; bottom: -10%; width: 42%; height: auto; aspect-ratio: 1; object-fit: contain; mix-blend-mode: multiply; opacity: .9; transform: rotate(-8deg) scale(.95); transition: transform .9s var(--ease), opacity .5s, filter .5s; z-index: 0; }
 .maison:hover .maison-img { transform: rotate(0) scale(1.05); mix-blend-mode: normal; filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .35)); }
 
 /* ——— Engagements ——— */
@@ -389,8 +390,7 @@ a.g-score:hover { border-color: var(--navy); }
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
   .ring { height: 260vh; }
-  .ring-track { --r: 300px; --s: 170px; }
-  .ring-info { flex-direction: column; align-items: flex-start; }
+  .ring-track { --r: 300px; --s: 190px; }
   .maisons-grid { grid-template-columns: 1fr 1fr; }
   .maison { min-height: 170px; padding: 20px 18px; }
   .maison-n { font-size: 22px; }
