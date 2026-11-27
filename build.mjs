@@ -254,6 +254,57 @@ function writePage(urlPath, html) {
 function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f.replace('.svg', '.png') : null; }
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
+// Détourage : fond blanc → transparent (remplissage depuis les bords), recadrage serré,
+// puis centrage dans un carré de taille fixe pour que toutes les montres aient le même gabarit.
+const detMap = new Map();
+async function detour(src, S = 800) {
+  if (detMap.has(src)) return detMap.get(src);
+  const file = path.join(ROOT, 'public', src);
+  if (!src || !fs.existsSync(file)) { detMap.set(src, null); return null; }
+  const buf = fs.readFileSync(file);
+  const name = 'det-' + crypto.createHash('md5').update(buf).digest('hex').slice(0, 10) + `-${S}.webp`;
+  const out = path.join(DIST, 'img', name), cached = path.join(CACHE, name);
+  if (!fs.existsSync(cached)) {
+    try {
+      const { data, info } = await sharp(buf).rotate().resize(1000, 1000, { fit: 'inside', withoutEnlargement: true }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      const W = info.width, H = info.height, N = W * H;
+      const alpha = Buffer.alloc(N);
+      for (let i = 0; i < N; i++) alpha[i] = data[i * 4 + 3];
+      const coinsTransparents = [0, W - 1, N - W, N - 1].every(i => alpha[i] < 20);
+      if (!coinsTransparents) {
+        // Fond : pixels presque blancs et peu saturés, connectés au bord de l'image
+        const isBg = i => { const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2]; const mn = Math.min(r, g, b), mx = Math.max(r, g, b); return mn > 228 && mx - mn < 18; };
+        const seen = new Uint8Array(N), stack = [];
+        for (let x = 0; x < W; x++) { stack.push(x, N - W + x); }
+        for (let y = 0; y < H; y++) { stack.push(y * W, y * W + W - 1); }
+        while (stack.length) {
+          const i = stack.pop();
+          if (seen[i] || !isBg(i)) continue;
+          seen[i] = 1; alpha[i] = 0;
+          const x = i % W;
+          if (x > 0) stack.push(i - 1); if (x < W - 1) stack.push(i + 1);
+          if (i >= W) stack.push(i - W); if (i < N - W) stack.push(i + W);
+        }
+      }
+      // Bords adoucis
+      const soft = await sharp(alpha, { raw: { width: W, height: H, channels: 1 } }).blur(0.7).extractChannel(0).raw().toBuffer();
+      for (let i = 0; i < N; i++) data[i * 4 + 3] = Math.min(data[i * 4 + 3], soft[i]);
+      const trimmed = await sharp(data, { raw: { width: W, height: H, channels: 4 } }).trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 10 }).png().toBuffer();
+      const inner = Math.round(S * 0.84);
+      const fitted = await sharp(trimmed).resize(inner, inner, { fit: 'inside' }).png().toBuffer();
+      const m = await sharp(fitted).metadata();
+      await sharp({ create: { width: S, height: S, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+        .composite([{ input: fitted, left: Math.round((S - m.width) / 2), top: Math.round((S - m.height) / 2) }])
+        .webp({ quality: 84, alphaQuality: 90 }).toFile(cached);
+    } catch (e) { console.warn('Détourage impossible', src, e.message); detMap.set(src, null); return null; }
+  }
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.copyFileSync(cached, out);
+  const url = '/img/' + name;
+  detMap.set(src, url);
+  return url;
+}
+
 function heroPicture(A) {
   const src = (f, mq) => { const o = imgMap.get(f); return o ? `<source media="${mq}" srcset="${o.srcset.join(', ')}" sizes="100vw">` : ''; };
   return `<picture>${src(A.image_mobile, '(max-width: 640px)')}${src(A.image_tablette, '(max-width: 1100px)')}${img(A.image, { sizes: '100vw', alt: 'Montre de prestige — Majesty Watches', eager: true, w: 1600 })}</picture>`;
@@ -261,7 +312,7 @@ function heroPicture(A) {
 
 function pageHome() {
   const A = site.accueil;
-  const okRing = m => m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]) && fondBlanc.has(m.photos[0]);
+  const okRing = m => m.statut !== 'Vendue' && m.photos[0] && fondBlanc.has(m.photos[0]) && detMap.get(m.photos[0]);
   const nouveaux = montres.filter(m => m.nouveaute && okRing(m)).slice(0, 14);
   // L'anneau a besoin d'au moins 8 pièces : on complète avec le reste du stock si besoin
   const list = [...nouveaux, ...montres.filter(m => !nouveaux.includes(m) && okRing(m))].slice(0, Math.max(nouveaux.length, 10));
@@ -270,9 +321,9 @@ function pageHome() {
   const avis = site.temoignages || [];
   // Montres qui défilent : les visuels détourés du CMS, puis des pièces du stock (une par modèle)
   const vus = new Set();
-  const stock = montres.filter(m => m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]) && !vus.has(m.marque + m.court) && vus.add(m.marque + m.court)).slice(0, 14);
+  const stock = montres.filter(m => m.statut !== 'Vendue' && m.photos[0] && fondBlanc.has(m.photos[0]) && detMap.get(m.photos[0]) && !vus.has(m.marque + m.court) && vus.add(m.marque + m.court)).slice(0, 16);
   const spinImgs = [];
-  const det = tournantes.filter(t => imgMap.get(t)).map(src => ({ src })), sto = stock.map(m => ({ src: m.photos[0], ph: true }));
+  const det = tournantes.filter(t => detMap.get(t)).map(src => ({ src })), sto = stock.map(m => ({ src: m.photos[0] }));
   for (let i = 0; i < Math.max(det.length, sto.length); i++) { if (sto[i]) spinImgs.push(sto[i]); if (det[i]) spinImgs.push(det[i]); }
   const body = `
 <section class="hero" data-hero>
@@ -305,7 +356,7 @@ function pageHome() {
     </div>
     <div class="ring-stage" data-ring-stage>
       <div class="ring-track" data-ring-track style="--n:${list.length}">
-        ${list.map((m, i) => `<a class="ring-it" href="/montres/${m.slug}/" style="--i:${i}" data-name="${esc(m.marque + ' ' + m.court)}" data-price="${esc(priceLabel(m))}" draggable="false"><img src="${imgMap.get(m.photos[0]).url[480]}" alt="${esc(m.nom)}" loading="lazy" draggable="false"></a>`).join('')}
+        ${list.map((m, i) => `<a class="ring-it" href="/montres/${m.slug}/" style="--i:${i}" data-name="${esc(m.marque + ' ' + m.court)}" data-price="${esc(priceLabel(m))}" draggable="false"><img src="${detMap.get(m.photos[0])}" alt="${esc(m.nom)}" loading="lazy" draggable="false"></a>`).join('')}
       </div>
       <div class="ring-floor" aria-hidden="true"></div>
     </div>
@@ -339,7 +390,7 @@ function pageHome() {
       <p>${esc(site.vendre.intro)}</p>
       <a class="btn btn-ghost" href="/vendre/">Vendez votre montre ${icon.arrow}</a>
     </div>
-    <div class="spin corners" data-spin data-reveal>${spinImgs.map((t, i) => `<img src="${imgMap.get(t.src).url[t.ph ? 480 : 900]}" alt="" loading="lazy" class="${[i === 0 ? 'on' : '', t.ph ? 'ph' : ''].filter(Boolean).join(' ')}">`).join('')}</div>
+    <div class="spin corners" data-spin data-reveal>${spinImgs.map((t, i) => `<img src="${detMap.get(t.src)}" alt="" loading="lazy"${i === 0 ? ' class="on"' : ''}>`).join('')}</div>
     <div class="sell-col r" data-reveal>
       <p class="eyebrow">Rechercher</p>
       <h2 class="h2">${esc(site.recherche.titre)}</h2>
@@ -628,6 +679,8 @@ for (const m of montres) {
     if (Math.min(...bords) > 235) fondBlanc.add(src);
   } catch {}
 }
+for (const m of montres) if (fondBlanc.has(m.photos[0]) && m.statut !== 'Vendue') await detour(m.photos[0]);
+for (const t of site.accueil.montres_tournantes || []) if (t) await detour(t);
 pageHome();
 pageCollection();
 montres.forEach(pageMontre);

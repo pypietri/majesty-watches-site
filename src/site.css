@@ -174,8 +174,7 @@ h1, h2, h3, p { margin: 0; }
 .sell-col.r { text-align: right; justify-items: end; }
 .sell-col.r .eyebrow { flex-direction: row-reverse; }
 .spin { position: relative; aspect-ratio: 1; color: var(--navy); }
-.spin img { position: absolute; inset: 11%; width: 78%; height: 78%; object-fit: contain; opacity: 0; transform: scale(.94) rotate(-5deg); transition: opacity .6s var(--ease), transform .9s var(--ease); filter: drop-shadow(0 30px 40px rgba(12, 28, 46, .18)); }
-.spin img.ph { inset: 14%; width: 72%; height: 72%; filter: none; mix-blend-mode: multiply; }
+.spin img { position: absolute; inset: 8%; width: 84%; height: 84%; object-fit: contain; opacity: 0; transform: scale(.94) rotate(-5deg); transition: opacity .6s var(--ease), transform .9s var(--ease); filter: drop-shadow(0 30px 40px rgba(12, 28, 46, .18)); }
 .spin img.on { opacity: 1; transform: none; }
 
 /* ——— Citation ——— */
@@ -392,7 +391,7 @@ a.g-score:hover { border-color: var(--navy); }
 .ring-stage.is-drag { cursor: grabbing; }
 .ring-track { --r: 640px; --s: 340px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
 .ring-it { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .3s, filter .3s; }
-.ring-it img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.ring-it img { width: 100%; height: 100%; object-fit: contain; }
 .ring-floor { position: absolute; left: 50%; bottom: 4%; width: 70%; height: 90px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(23, 51, 82, .14), transparent 70%); filter: blur(8px); pointer-events: none; }
 .ring-info { width: 100%; display: flex; justify-content: center; align-items: center; gap: clamp(20px, 5vw, 64px); text-align: center; }
 .ring-btn { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; color: var(--navy); display: grid; place-items: center; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
