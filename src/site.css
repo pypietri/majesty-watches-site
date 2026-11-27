@@ -408,3 +408,8 @@ a.g-score:hover { border-color: var(--navy); }
 .arr-track .card[data-reveal] { transition: none; }
 .arr-ft { display: flex; justify-content: center; margin-top: 30px; }
 .ring-btn[data-arr-prev] svg { transform: rotate(180deg); }
+@media (min-width: 641px) {
+  .arr-track { padding-left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); padding-right: var(--pad); scroll-padding-left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
+  .arr-track .card { scroll-snap-align: start; transform: none; opacity: 1; }
+  .arr-ft { justify-content: flex-start; }
+}
