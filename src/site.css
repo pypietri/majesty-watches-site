@@ -117,10 +117,6 @@ h1, h2, h3, p { margin: 0; }
 @keyframes tick { to { transform: translateX(-50%); } }
 
 /* ——— Anneau 3D de la collection ——— */
-.ring-btn { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; color: var(--navy); display: grid; place-items: center; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
-.ring-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
-.ring-btn svg { width: 18px; height: 18px; }
-.ring-btn[data-ring-prev] svg { transform: rotate(180deg); }
 
 /* ——— Maisons ——— */
 .maisons { padding: clamp(72px, 9vw, 130px) 0; background: var(--mist); }
@@ -388,8 +384,6 @@ a.g-score:hover { border-color: var(--navy); }
   .trust-grid { grid-template-columns: 1fr; }
   .trust-it { border-left: 0; padding: 26px 0; }
   .trust-it + .trust-it { border-top: 1px solid rgba(255, 255, 255, .12); }
-  .arr-track { --w: 68vw; }
-  .arr-ctl { display: none; }
   .sec-hd { flex-direction: column; align-items: flex-start; }
   .cta-btns .btn { width: 100%; }
   .form-row { grid-template-columns: 1fr; }
@@ -399,17 +393,37 @@ a.g-score:hover { border-color: var(--navy); }
   .ft-bottom { justify-content: center; text-align: center; }
 }
 
-/* Carrousel « Nouvel arrivage » : défilement natif (trackpad, doigt, flèches) */
-.arr { padding: clamp(80px, 9vw, 130px) 0 clamp(60px, 7vw, 100px); background: #fff; }
-.arr-ctl { display: flex; gap: 10px; }
-.arr-track { --w: clamp(250px, 24vw, 340px); display: flex; gap: clamp(16px, 2vw, 32px); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 30px calc(50% - var(--w) / 2) 20px; }
-.arr-track::-webkit-scrollbar { display: none; }
-.arr-track .card { flex: 0 0 var(--w); scroll-snap-align: center; transform: scale(calc(1 - var(--k, 0) * .14)); opacity: calc(1 - var(--k, 0) * .55); transform-origin: 50% 40%; will-change: transform; }
-.arr-track .card[data-reveal] { transition: none; }
-.arr-ft { display: flex; justify-content: center; margin-top: 30px; }
-.ring-btn[data-arr-prev] svg { transform: rotate(180deg); }
-@media (min-width: 641px) {
-  .arr-track { padding-left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); padding-right: var(--pad); scroll-padding-left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
-  .arr-track .card { scroll-snap-align: start; transform: none; opacity: 1; }
-  .arr-ft { justify-content: flex-start; }
+/* Anneau « Nouvel arrivage » */
+.ring { position: relative; background: #fff; padding: clamp(80px, 9vw, 130px) 0 clamp(64px, 7vw, 110px); overflow: hidden; }
+.ring-in { display: grid; gap: clamp(10px, 2vw, 24px); }
+.ring-hd { width: 100%; text-align: center; }
+.ring-hd .eyebrow { justify-content: center; }
+.ring-hd .eyebrow::after { content: ""; width: 28px; height: 1px; background: currentColor; }
+.ring-stage { position: relative; height: clamp(340px, 40vw, 540px); perspective: 1600px; perspective-origin: 50% 35%; cursor: grab; touch-action: pan-y; user-select: none; }
+.ring-stage.is-drag { cursor: grabbing; }
+.ring-track { --r: 640px; --s: 340px; position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--a, 0deg)); will-change: transform; }
+.ring-it { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .3s, filter .3s; }
+.ring-it img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.ring-floor { position: absolute; left: 50%; bottom: 4%; width: 70%; height: 90px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(23, 51, 82, .14), transparent 70%); filter: blur(8px); pointer-events: none; }
+.ring-info { width: 100%; display: flex; justify-content: center; align-items: center; gap: clamp(20px, 5vw, 64px); text-align: center; }
+.ring-btn { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; color: var(--navy); display: grid; place-items: center; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
+.ring-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.ring-btn svg { width: 18px; height: 18px; }
+.ring-btn[data-ring-prev] svg { transform: rotate(180deg); }
+.ring-now em { font: 600 10px/1 var(--font); font-style: normal; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line-2); padding-bottom: 4px; justify-self: center; }
+.ring-now { min-width: min(320px, 50vw); }
+.ring-now { justify-items: center; }
+.ring-now { display: grid; gap: 8px; }
+.ring-now span { font: 400 14px/1.2 var(--font); letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
+.ring-now strong { font: 200 30px/1 var(--font); color: var(--navy); letter-spacing: .02em; }
+.ring-hint { display: block; margin-top: 18px; font: 500 10.5px/1 var(--font); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.ring-it img { pointer-events: none; -webkit-user-drag: none; }
+.ring-ft { display: flex; justify-content: center; margin-top: 18px; }
+@media (max-width: 1150px) { .ring-track { --r: 440px; --s: 240px; } }
+@media (max-width: 640px) {
+  .ring-stage { height: 330px; }
+  .ring-track { --r: 300px; --s: 190px; }
+  .ring-btn { width: 46px; height: 46px; }
+  .ring-now { min-width: 0; flex: 1; }
+  .ring-now strong { font-size: 24px; }
 }

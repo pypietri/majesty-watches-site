@@ -35,9 +35,9 @@ for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['lap', { widt
   await page.waitForTimeout(800);
   await page.screenshot({ path: `shots/${name}-v0-hero.jpg`, type: 'jpeg', quality: 72 });
   for (const f of [0.5]) {
-    await page.evaluate(f => { const r = document.querySelector('[data-arr]'); if (r) scrollTo(0, r.offsetTop + (r.offsetHeight - innerHeight) * f); }, f);
+    await page.evaluate(f => { const r = document.querySelector('[data-ring]'); if (r) scrollTo(0, r.offsetTop + (r.offsetHeight - innerHeight) * f); }, f);
     await page.waitForTimeout(1600);
-    await page.screenshot({ path: `shots/${name}-v1-arr-${Math.round(f * 100)}.jpg`, type: 'jpeg', quality: 72 });
+    await page.screenshot({ path: `shots/${name}-v1-ring-${Math.round(f * 100)}.jpg`, type: 'jpeg', quality: 72 });
   }
   for (const sel of ['.trust', '.maisons', '.sell', '.reviews']) {
     await page.evaluate(sel => { const el = document.querySelector(sel); if (el) { el.scrollIntoView(); document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('is-in')); } }, sel);

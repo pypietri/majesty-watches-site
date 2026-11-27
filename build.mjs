@@ -256,8 +256,9 @@ function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles su
 
 function pageHome() {
   const A = site.accueil;
-  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue' && m.photos[0]).slice(0, 12);
-  const list = nouveaux.length >= 3 ? nouveaux : montres.filter(m => m.statut !== 'Vendue' && m.photos[0]).slice(0, 10);
+  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0])).slice(0, 14);
+  // L'anneau a besoin d'au moins 8 pièces : on complète avec le reste du stock si besoin
+  const list = [...nouveaux, ...montres.filter(m => !nouveaux.includes(m) && m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]))].slice(0, Math.max(nouveaux.length, 10));
   const dispo = montres.filter(m => m.statut !== 'Vendue').length;
   const tournantes = (A.montres_tournantes || []).filter(Boolean);
   const avis = site.temoignages || [];
@@ -289,18 +290,26 @@ function pageHome() {
   </div>
 </section>
 
-<section class="arr" data-arr>
-  <div class="wrap">
-    <div class="sec-hd">
-      <div><p class="eyebrow">Arrivages récents</p><h2 class="h2">Nouvel arrivage</h2></div>
-      <div class="arr-ctl">
-        <button class="ring-btn" type="button" data-arr-prev aria-label="Précédente">${icon.arrow}</button>
-        <button class="ring-btn" type="button" data-arr-next aria-label="Suivante">${icon.arrow}</button>
-      </div>
+<section class="ring" data-ring aria-label="Nouvel arrivage">
+  <div class="ring-in">
+    <div class="ring-hd wrap">
+      <p class="eyebrow">Arrivages récents</p>
+      <h2 class="h2">Nouvel arrivage</h2>
+      <span class="ring-hint">Glissez, balayez au trackpad ou utilisez les flèches</span>
     </div>
+    <div class="ring-stage" data-ring-stage>
+      <div class="ring-track" data-ring-track style="--n:${list.length}">
+        ${list.map((m, i) => `<a class="ring-it" href="/montres/${m.slug}/" style="--i:${i}" data-name="${esc(m.marque + ' ' + m.court)}" data-price="${esc(priceLabel(m))}" draggable="false"><img src="${imgMap.get(m.photos[0]).url[480]}" alt="${esc(m.nom)}" loading="lazy" draggable="false"></a>`).join('')}
+      </div>
+      <div class="ring-floor" aria-hidden="true"></div>
+    </div>
+    <div class="ring-info wrap">
+      <button class="ring-btn" type="button" data-ring-prev aria-label="Montre précédente">${icon.arrow}</button>
+      <a class="ring-now" data-ring-link href="/montres/${list[0].slug}/"><span data-ring-name>${esc(list[0].marque + ' ' + list[0].court)}</span><strong data-ring-price>${esc(priceLabel(list[0]))}</strong><em>Voir la fiche</em></a>
+      <button class="ring-btn" type="button" data-ring-next aria-label="Montre suivante">${icon.arrow}</button>
+    </div>
+    <div class="ring-ft"><a class="link" href="/montres/">Voir toute la collection (${dispo} pièces) ${icon.arrow}</a></div>
   </div>
-  <div class="arr-track" data-arr-track>${list.map(m => card(m)).join('')}</div>
-  <div class="wrap arr-ft"><a class="link" href="/montres/">Voir toute la collection (${dispo} pièces) ${icon.arrow}</a></div>
 </section>
 
 <section class="maisons">

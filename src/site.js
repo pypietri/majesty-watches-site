@@ -36,22 +36,62 @@
     io.observe(el);
   });
 
-  // Carrousel « Nouvel arrivage » : défilement natif, la pièce centrale est mise en avant
-  const arr = $('[data-arr]');
-  if (arr) {
-    const track = $('[data-arr-track]', arr), cards = $$('.card', track);
-    let tick = false;
-    const paint = () => {
-      tick = false;
-      const mid = track.scrollLeft + track.clientWidth / 2;
-      cards.forEach(c => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid) / (c.offsetWidth * 1.1); c.style.setProperty('--k', Math.min(d, 1).toFixed(3)); });
+  // Anneau 3D « Nouvel arrivage » : tourne seulement au geste (trackpad, glisser, flèches, clavier)
+  const ring = $('[data-ring]');
+  if (ring) {
+    const track = $('[data-ring-track]', ring), stage = $('[data-ring-stage]', ring);
+    const items = $$('.ring-it', ring), n = items.length, step = 360 / n;
+    const nameEl = $('[data-ring-name]', ring), priceEl = $('[data-ring-price]', ring), linkEl = $('[data-ring-link]', ring);
+    let tgt = 0, cur = 0, raf = null, front = 0, snapT = null;
+    const render = () => {
+      cur += (tgt - cur) * 0.12;
+      if (Math.abs(tgt - cur) < 0.02) cur = tgt;
+      track.style.setProperty('--a', cur.toFixed(3) + 'deg');
+      let best = 0, bestD = 999;
+      items.forEach((it, i) => {
+        const d = ((i * step + cur) % 360 + 540) % 360 - 180, ad = Math.abs(d);
+        it.style.opacity = (1 - Math.min(ad, 110) / 140).toFixed(3);
+        it.style.filter = ad > 25 ? `blur(${((ad - 25) / 30).toFixed(2)}px)` : 'none';
+        if (ad < bestD) { bestD = ad; best = i; }
+      });
+      if (best !== front) { front = best; nameEl.textContent = items[best].dataset.name; priceEl.textContent = items[best].dataset.price; linkEl.href = items[best].getAttribute('href'); }
+      raf = cur !== tgt ? requestAnimationFrame(render) : null;
     };
-    track.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(paint); } }, { passive: true });
-    addEventListener('resize', paint);
-    const stepBy = dir => track.scrollBy({ left: dir * (cards[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || 24)), behavior: 'smooth' });
-    $('[data-arr-prev]', arr).addEventListener('click', () => stepBy(-1));
-    $('[data-arr-next]', arr).addEventListener('click', () => stepBy(1));
-    paint();
+    const kick = () => { if (!raf) raf = requestAnimationFrame(render); };
+    const snap = () => { tgt = Math.round(tgt / step) * step; kick(); };
+    const go = dir => { tgt = Math.round(tgt / step) * step - dir * step; kick(); };
+    $('[data-ring-prev]', ring).addEventListener('click', () => go(-1));
+    $('[data-ring-next]', ring).addEventListener('click', () => go(1));
+    stage.tabIndex = 0;
+    stage.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); } });
+    // Trackpad : balayage horizontal à deux doigts (le défilement vertical de la page reste libre)
+    stage.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      tgt -= e.deltaX * 0.12; kick();
+      clearTimeout(snapT); snapT = setTimeout(snap, 160);
+    }, { passive: false });
+    // Glisser (souris ou doigt)
+    let startX = null, base = 0, moved = false;
+    stage.addEventListener('pointerdown', e => { if (e.button) return; startX = e.clientX; base = tgt; moved = false; });
+    addEventListener('pointermove', e => {
+      if (startX === null) return;
+      const dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 6) { moved = true; stage.classList.add('is-drag'); }
+      if (moved) { tgt = base + dx * 0.25; kick(); }
+    });
+    const end = () => { if (startX === null) return; startX = null; stage.classList.remove('is-drag'); if (moved) snap(); };
+    addEventListener('pointerup', end); addEventListener('pointercancel', end);
+    // Clic : sur la montre de face → fiche ; sur une autre → elle vient se placer de face
+    items.forEach((it, i) => it.addEventListener('click', e => {
+      if (moved) { e.preventDefault(); moved = false; return; }
+      if (i !== front) {
+        e.preventDefault();
+        const d = ((i * step + tgt) % 360 + 540) % 360 - 180;
+        tgt = Math.round((tgt - d) / step) * step; kick();
+      }
+    }));
+    render();
   }
 
   // Montres qui défilent (section Vendre)
