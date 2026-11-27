@@ -36,50 +36,29 @@
     io.observe(el);
   });
 
-  // Anneau 3D : ne tourne qu'au geste (glisser, flèches, clavier)
-  const ring = $('[data-ring]');
-  if (ring) {
-    const track = $('[data-ring-track]', ring), stage = $('[data-ring-stage]', ring);
-    const items = $$('.ring-it', ring), n = items.length, step = 360 / n;
-    const nameEl = $('[data-ring-name]', ring), priceEl = $('[data-ring-price]', ring), linkEl = $('[data-ring-link]', ring);
-    let tgt = 0, cur = 0, base = 0, startX = null, raf = null, front = -1;
-    const snap = () => { tgt = Math.round(tgt / step) * step; kick(); };
-    const render = () => {
-      cur += (tgt - cur) * 0.14;
-      if (Math.abs(tgt - cur) < 0.05) cur = tgt;
-      track.style.setProperty('--a', cur.toFixed(2) + 'deg');
-      let best = 0, bestD = 999;
-      items.forEach((it, i) => {
-        const d = ((i * step + cur) % 360 + 540) % 360 - 180, ad = Math.abs(d);
-        it.style.opacity = (1 - Math.min(ad, 110) / 140).toFixed(2);
-        it.style.filter = `blur(${Math.max(0, ad - 25) / 30}px)`;
-        if (ad < bestD) { bestD = ad; best = i; }
-      });
-      if (best !== front) { front = best; nameEl.textContent = items[best].dataset.name; priceEl.textContent = items[best].dataset.price; linkEl.href = items[best].getAttribute('href'); }
-      raf = cur !== tgt ? requestAnimationFrame(render) : null;
+  // Carrousel « Nouvel arrivage » : défilement natif, la pièce centrale est mise en avant
+  const arr = $('[data-arr]');
+  if (arr) {
+    const track = $('[data-arr-track]', arr), cards = $$('.card', track);
+    let tick = false;
+    const paint = () => {
+      tick = false;
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      cards.forEach(c => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid) / (c.offsetWidth * 1.1); c.style.setProperty('--k', Math.min(d, 1).toFixed(3)); });
     };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(render); };
-    const go = dir => { tgt = Math.round(tgt / step) * step - dir * step; kick(); };
-    $('[data-ring-prev]', ring).addEventListener('click', () => go(-1));
-    $('[data-ring-next]', ring).addEventListener('click', () => go(1));
-    stage.tabIndex = 0;
-    stage.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); } });
-    stage.addEventListener('pointerdown', e => { startX = e.clientX; base = tgt; stage.classList.add('is-drag'); });
-    addEventListener('pointermove', e => { if (startX === null) return; tgt = base + (e.clientX - startX) * 0.3; kick(); });
-    const end = e => {
-      if (startX === null) return;
-      if (Math.abs(e.clientX - startX) > 6) { const block = ev => { ev.preventDefault(); ev.stopPropagation(); stage.removeEventListener('click', block, true); }; stage.addEventListener('click', block, true); }
-      startX = null; stage.classList.remove('is-drag'); snap();
-    };
-    addEventListener('pointerup', end); addEventListener('pointercancel', end);
-    render();
+    track.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(paint); } }, { passive: true });
+    addEventListener('resize', paint);
+    const stepBy = dir => track.scrollBy({ left: dir * (cards[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || 24)), behavior: 'smooth' });
+    $('[data-arr-prev]', arr).addEventListener('click', () => stepBy(-1));
+    $('[data-arr-next]', arr).addEventListener('click', () => stepBy(1));
+    paint();
   }
 
   // Montres qui défilent (section Vendre)
   const spin = $('[data-spin]');
   if (spin) {
     const imgs = $$('img', spin); let k = 0;
-    if (imgs.length > 1) setInterval(() => { imgs[k].classList.remove('on'); k = (k + 1) % imgs.length; imgs[k].classList.add('on'); }, 2600);
+    if (imgs.length > 1) setInterval(() => { imgs[k].classList.remove('on'); k = (k + 1) % imgs.length; imgs[k].classList.add('on'); }, 1500);
   }
 
   // Avis : carrousel automatique

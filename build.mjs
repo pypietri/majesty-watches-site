@@ -254,56 +254,34 @@ function writePage(urlPath, html) {
 function logoMarque(b) { const f = `/assets/marques/${slugify(b)}.svg`; return fs.existsSync(path.join(ROOT, 'public', f)) ? f.replace('.svg', '.png') : null; }
 function stars(n = 5) { return `<span class="stars" aria-label="${n} étoiles sur 5">${Array.from({ length: Math.round(n) }, () => icon.star).join('')}</span>`; }
 
-function ringSection() {
-  const items = montres.filter(m => m.photos[0] && imgMap.get(m.photos[0]) && m.statut !== 'Vendue').slice(0, 12);
-  return `<section class="ring" data-ring aria-label="La collection en 3D">
-  <div class="ring-in">
-    <div class="ring-hd wrap">
-      <p class="eyebrow">La collection</p>
-      <h2 class="h2">Chaque pièce,<br>sous tous les angles</h2>
-      <span class="ring-hint">Glissez ou utilisez les flèches</span>
-    </div>
-    <div class="ring-stage" data-ring-stage>
-      <div class="ring-track" data-ring-track style="--n:${items.length}">
-        ${items.map((m, i) => `<a class="ring-it" href="/montres/${m.slug}/" style="--i:${i}" data-name="${esc(m.marque + ' ' + m.court)}" data-price="${esc(priceLabel(m))}"><img src="${imgMap.get(m.photos[0]).url[480]}" alt="${esc(m.nom)}" loading="lazy" draggable="false"></a>`).join('')}
-      </div>
-      <div class="ring-floor" aria-hidden="true"></div>
-    </div>
-    <div class="ring-info wrap">
-      <button class="ring-btn" type="button" data-ring-prev aria-label="Montre précédente">${icon.arrow}</button>
-      <a class="ring-now" data-ring-link href="${items[0] ? '/montres/' + items[0].slug + '/' : '/montres/'}"><span data-ring-name>${esc(items[0] ? items[0].marque + ' ' + items[0].court : '')}</span><strong data-ring-price>${esc(items[0] ? priceLabel(items[0]) : '')}</strong><em>Voir la fiche</em></a>
-      <button class="ring-btn" type="button" data-ring-next aria-label="Montre suivante">${icon.arrow}</button>
-    </div>
-  </div>
-</section>`;
-}
-
 function pageHome() {
   const A = site.accueil;
-  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue').slice(0, 8);
-  const list = nouveaux.length >= 4 ? nouveaux : montres.slice(0, 8);
+  const nouveaux = montres.filter(m => m.nouveaute && m.statut !== 'Vendue' && m.photos[0]).slice(0, 12);
+  const list = nouveaux.length >= 3 ? nouveaux : montres.filter(m => m.statut !== 'Vendue' && m.photos[0]).slice(0, 10);
   const dispo = montres.filter(m => m.statut !== 'Vendue').length;
   const tournantes = (A.montres_tournantes || []).filter(Boolean);
   const avis = site.temoignages || [];
+  // Montres qui défilent : les visuels détourés du CMS, puis des pièces du stock (une par modèle)
+  const vus = new Set();
+  const stock = montres.filter(m => m.statut !== 'Vendue' && m.photos[0] && imgMap.get(m.photos[0]) && !vus.has(m.marque + m.court) && vus.add(m.marque + m.court)).slice(0, 14);
+  const spinImgs = [];
+  const det = tournantes.filter(t => imgMap.get(t)).map(src => ({ src })), sto = stock.map(m => ({ src: m.photos[0], ph: true }));
+  for (let i = 0; i < Math.max(det.length, sto.length); i++) { if (sto[i]) spinImgs.push(sto[i]); if (det[i]) spinImgs.push(det[i]); }
   const body = `
 <section class="hero" data-hero>
   <div class="hero-bg">${img(A.image, { sizes: '100vw', alt: 'Montre de prestige — Majesty Watches', eager: true, w: 1600 })}</div>
   <div class="wrap">
     <div class="hero-tx">
-      <p class="eyebrow" data-reveal>${esc(A.surtitre)}</p>
       <h1 class="display" data-reveal>${esc(A.titre)}</h1>
       <p class="lead" data-reveal>${esc(A.texte)}</p>
       <div class="hero-btns" data-reveal>
         <a class="btn" href="/montres/">Découvrez notre collection ${icon.arrow}</a>
         <a class="btn btn-white" href="/vendre/">Vendez votre montre ${icon.arrow}</a>
-        <a class="btn btn-white" href="/recherche/">Recherche personnalisée ${icon.arrow}</a>
       </div>
     </div>
   </div>
   <div class="hero-foot"><div class="wrap"><span>${dispo} pièces disponibles</span><span class="hero-scroll"><i></i>Défiler</span></div></div>
 </section>
-
-${ringSection()}
 
 <section class="trust">
   <div class="wrap trust-grid">
@@ -311,14 +289,18 @@ ${ringSection()}
   </div>
 </section>
 
-<section class="sec">
+<section class="arr" data-arr>
   <div class="wrap">
     <div class="sec-hd">
       <div><p class="eyebrow">Arrivages récents</p><h2 class="h2">Nouvel arrivage</h2></div>
-      <a class="link" href="/montres/">Voir toute la collection ${icon.arrow}</a>
+      <div class="arr-ctl">
+        <button class="ring-btn" type="button" data-arr-prev aria-label="Précédente">${icon.arrow}</button>
+        <button class="ring-btn" type="button" data-arr-next aria-label="Suivante">${icon.arrow}</button>
+      </div>
     </div>
-    <div class="grid">${list.map(m => card(m)).join('')}</div>
   </div>
+  <div class="arr-track" data-arr-track>${list.map(m => card(m)).join('')}</div>
+  <div class="wrap arr-ft"><a class="link" href="/montres/">Voir toute la collection (${dispo} pièces) ${icon.arrow}</a></div>
 </section>
 
 <section class="maisons">
@@ -342,7 +324,7 @@ ${ringSection()}
       <p>${esc(site.vendre.intro)}</p>
       <a class="btn btn-ghost" href="/vendre/">Vendez votre montre ${icon.arrow}</a>
     </div>
-    <div class="spin corners" data-spin data-reveal>${tournantes.map((t, i) => imgMap.get(t) ? `<img src="${imgMap.get(t).url[900]}" alt="" loading="lazy"${i === 0 ? ' class="on"' : ''}>` : '').join('')}</div>
+    <div class="spin corners" data-spin data-reveal>${spinImgs.map((t, i) => `<img src="${imgMap.get(t.src).url[t.ph ? 480 : 900]}" alt="" loading="lazy" class="${[i === 0 ? 'on' : '', t.ph ? 'ph' : ''].filter(Boolean).join(' ')}">`).join('')}</div>
     <div class="sell-col r" data-reveal>
       <p class="eyebrow">Rechercher</p>
       <h2 class="h2">${esc(site.recherche.titre)}</h2>

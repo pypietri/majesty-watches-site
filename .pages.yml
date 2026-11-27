@@ -48,7 +48,7 @@ content:
         type: image
         list: true
       - name: nouveaute
-        label: Afficher dans « Nouveautés » (page d’accueil)
+        label: Afficher dans le carrousel « Nouvel arrivage » (accueil)
         type: boolean
         default: true
       - name: publie
@@ -100,7 +100,6 @@ content:
         label: Page d’accueil
         type: object
         fields:
-          - { name: surtitre, label: Petit titre, type: string }
           - { name: titre, label: Grand titre, type: string }
           - { name: texte, label: Texte d’introduction, type: text }
           - { name: image, label: Grande photo, type: image }
