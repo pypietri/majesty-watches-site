@@ -30,6 +30,20 @@ for (const [name, vp] of [['desk', { width: 1440, height: 900 }], ['mob', { widt
     const slug = (p.replace(/\//g, '_') || 'home').replace(/^_|_$/g, '') || 'home';
     await page.screenshot({ path: `shots/${name}-${slug.slice(0, 40)}.jpg`, fullPage: true, type: 'jpeg', quality: 70 });
   }
+  // Captures « écran » de l’accueil à plusieurs hauteurs (sections animées)
+  await page.goto('http://localhost:4173/', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `shots/${name}-v0-hero.jpg`, type: 'jpeg', quality: 72 });
+  for (const f of [0.15, 0.45, 0.75]) {
+    await page.evaluate(f => { const r = document.querySelector('[data-ring]'); if (r) scrollTo(0, r.offsetTop + (r.offsetHeight - innerHeight) * f); }, f);
+    await page.waitForTimeout(1600);
+    await page.screenshot({ path: `shots/${name}-v1-ring-${Math.round(f * 100)}.jpg`, type: 'jpeg', quality: 72 });
+  }
+  for (const sel of ['.maisons', '.sell', '.reviews']) {
+    await page.evaluate(sel => { const el = document.querySelector(sel); if (el) { el.scrollIntoView(); document.querySelectorAll('[data-reveal]').forEach(e => e.classList.add('is-in')); } }, sel);
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `shots/${name}-v2${sel.replace('.', '-')}.jpg`, type: 'jpeg', quality: 72 });
+  }
   await ctx.close();
 }
 await browser.close();
